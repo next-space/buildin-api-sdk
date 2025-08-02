@@ -1,0 +1,45 @@
+{
+  "name": "buildin-api-sdk",
+  "version": "1.0.1",
+  "description": "Official TypeScript/JavaScript SDK for Buildin API - Create, manage, and interact with Buildin pages, databases, and blocks",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "buildin",
+    "api",
+    "sdk",
+    "typescript",
+    "javascript",
+    "notion",
+    "productivity",
+    "database",
+    "pages",
+    "blocks"
+  ],
+  "author": "Buildin Team",
+  "license": "MIT",
+  "homepage": "https://github.com/next-space/buildin-api-sdk",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/next-space/buildin-api-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/next-space/buildin-api-sdk/issues"
+  },
+  "devDependencies": {
+    "@types/node": "^24.1.0",
+    "typescript": "^5.9.2"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

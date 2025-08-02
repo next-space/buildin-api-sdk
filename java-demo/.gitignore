@@ -1,0 +1,25 @@
+# 编译输出
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# IDE文件
+.idea/
+*.iml
+.vscode/
+.eclipse/
+
+# 操作系统文件
+.DS_Store
+Thumbs.db
+
+# 日志文件
+*.log
+
+# 环境配置文件（包含敏感信息）
+.env
+
+# Maven 临时文件
+dependency-reduced-pom.xml

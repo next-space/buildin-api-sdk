@@ -1,0 +1,136 @@
+# IDE和编辑器
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+replay_pid*
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# Node.js和TypeScript
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.npm
+.eslintcache
+*.tsbuildinfo
+.nyc_output
+coverage/
+*.lcov
+.sass-cache/
+.parcel-cache/
+.cache/
+.next/
+out/
+dist/
+
+# 环境变量和配置
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+# 保留 .env.example 作为模板
+
+# 日志文件
+logs/
+*.log
+
+# 运行时文件
+*.pid
+*.seed
+*.pid.lock
+
+# 临时文件
+tmp/
+temp/
+.tmp/
+
+# 备份文件
+*.bak
+*.backup
+*.orig
+
+# 操作系统
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# 编译输出
+*.o
+*.so
+*.dylib
+*.exe
+*.dll
+
+# 测试覆盖率
+coverage/
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# 文档生成
+docs/_build/
+site/
+
+# Maven 发布相关敏感文件
+**/.m2/settings.xml
+**/settings.xml
+**/*private-key*.asc
+**/*secret*.asc
+**/*gpg*
+**/.gnupg/
+
+# NPM 发布相关
+**/.npmrc
+**/npm-debug.log*
+**/.npm-token
+
+# Git 推送相关
+**/GIT_TOKEN
+**/.git-credentials
+**/git_push.sh
+
+# 发布指南文件（包含敏感信息模板）
+**/PUBLISHING_GUIDE.md
+**/MAC_SETUP_GUIDE.md
+**/QUICK_START.md
+
+# 其他
+*.tmp
+*.temp
+.vscode/settings.json

@@ -1,0 +1,45 @@
+{
+  "name": "buildin-api-typescript-demo",
+  "version": "1.0.1",
+  "description": "Buildin API TypeScript SDK 演示程序",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "dev:create-database": "ts-node src/CreateDatabaseDemo.ts",
+    "dev:add-children": "ts-node src/BlockAddChildrenDemo.ts",
+    "dev:create-record": "ts-node src/CreateDatabaseRecordDemo.ts",
+    "dev:update-record": "ts-node src/UpdateDatabaseRecordDemo.ts",
+    "dev:delete-block": "ts-node src/DeleteBlockDemo.ts",
+    "dev:search-page": "ts-node src/PageSearchDemo.ts",
+    "demo:create-database": "node dist/CreateDatabaseDemo.js",
+    "demo:add-children": "node dist/BlockAddChildrenDemo.js",
+    "demo:create-record": "node dist/CreateDatabaseRecordDemo.js",
+    "demo:delete-block": "node dist/DeleteBlockDemo.js",
+    "demo:all": "npm run demo:create-database && npm run demo:add-children && npm run demo:create-record"
+  },
+  "keywords": [
+    "buildin",
+    "api",
+    "demo",
+    "typescript",
+    "nodejs"
+  ],
+  "author": "Buildin API Demo",
+  "license": "MIT",
+  "dependencies": {
+    "uuid": "^9.0.0",
+    "buildin-api-sdk": "1.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/uuid": "^9.0.7",
+    "dotenv": "^16.3.1",
+    "typescript": "^5.3.3",
+    "ts-node": "^10.9.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+} 

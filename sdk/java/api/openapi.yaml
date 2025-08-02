@@ -1,0 +1,5998 @@
+openapi: 3.1.0
+info:
+  contact:
+    name: Buildin API Support
+    url: https://buildin.ai
+  description: Buildin Developer API
+  title: Buildin API
+  version: 1.0.0
+servers:
+- description: 生产环境
+  url: https://api.buildin.ai
+- description: 测试环境
+  url: https://api.buildin.ai
+security:
+- bearerAuth: []
+tags:
+- description: 数据库相关操作
+  name: 数据库
+- description: 页面相关操作
+  name: 页面
+- description: 块相关操作
+  name: 块
+paths:
+  /v1/databases:
+    post:
+      description: 在现有页面下创建一个新的数据库
+      operationId: createDatabase
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDatabaseRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Database"
+          description: 数据库创建成功
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: 请求参数错误
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: 未授权
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: 权限不足
+      summary: 创建数据库
+      tags:
+      - 数据库
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /v1/databases/{database_id}:
+    get:
+      description: 根据ID获取数据库对象
+      operationId: getDatabase
+      parameters:
+      - description: 数据库ID
+        explode: false
+        in: path
+        name: database_id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Database"
+          description: 成功获取数据库
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: 数据库不存在
+      summary: 获取数据库
+      tags:
+      - 数据库
+      x-accepts:
+      - application/json
+    patch:
+      description: 更新数据库的属性
+      operationId: updateDatabase
+      parameters:
+      - description: 数据库ID
+        explode: false
+        in: path
+        name: database_id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateDatabaseRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Database"
+          description: 数据库更新成功
+      summary: 更新数据库
+      tags:
+      - 数据库
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /v1/databases/{database_id}/query:
+    post:
+      description: 获取数据库中的页面列表，支持分页
+      operationId: queryDatabase
+      parameters:
+      - description: 数据库ID
+        explode: false
+        in: path
+        name: database_id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QueryDatabaseRequest"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QueryDatabaseResponse"
+          description: 查询成功
+      summary: 查询数据库
+      tags:
+      - 数据库
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /v1/pages:
+    post:
+      description: 在页面或数据库中创建新页面
+      operationId: createPage
+      requestBody:
+        content:
+          application/json:
+            examples:
+              create_page_in_database:
+                summary: 在数据库中创建页面
+                value:
+                  parent:
+                    database_id: d9824bdc-8445-4327-be8b-5b47500af6ce
+                  icon:
+                    type: emoji
+                    emoji: 📝
+                  cover:
+                    type: external
+                    external:
+                      url: https://example.com/cover.jpg
+                  properties:
+                    标题:
+                      type: title
+                      title:
+                      - text:
+                          content: 我的新页面
+                    描述:
+                      type: rich_text
+                      rich_text:
+                      - text:
+                          content: 这是页面描述
+                    状态:
+                      type: select
+                      select:
+                        name: 进行中
+                    完成:
+                      type: checkbox
+                      checkbox: false
+                    截止日期:
+                      type: date
+                      date:
+                        start: 2024-01-15
+              create_page_under_page:
+                summary: 在页面下创建子页面
+                value:
+                  parent:
+                    page_id: a1b2c3d4-5678-9012-3456-789012345678
+                  properties:
+                    标题:
+                      type: title
+                      title:
+                      - text:
+                          content: 子页面标题
+            schema:
+              $ref: "#/components/schemas/CreatePageRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                object: page
+                id: a1b2c3d4-5678-9012-3456-789012345678
+                createdAt: 2024-01-01T10:00:00.000Z
+                createdBy:
+                  object: user
+                  id: bot-12345
+                updatedAt: 2024-01-01T10:00:00.000Z
+                updatedBy:
+                  object: user
+                  id: bot-12345
+                archived: false
+                properties:
+                  title:
+                    id: title
+                    type: title
+                    title:
+                    - type: text
+                      text:
+                        content: 我的新页面
+                  描述:
+                    id: description
+                    type: rich_text
+                    rich_text:
+                    - type: text
+                      text:
+                        content: 这是页面描述
+                parent:
+                  type: database_id
+                  database_id: d9824bdc-8445-4327-be8b-5b47500af6ce
+                url: https://buildin.ai/docs/a1b2c3d4-5678-9012-3456-789012345678
+              schema:
+                $ref: "#/components/schemas/CreatePageResponse"
+          description: 页面创建成功
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: 请求参数错误
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: 未授权
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: 权限不足
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: 内部服务器错误
+      summary: 创建页面
+      tags:
+      - 页面
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /v1/pages/{page_id}:
+    get:
+      description: 根据ID获取页面对象
+      operationId: getPage
+      parameters:
+      - description: 页面ID
+        explode: false
+        in: path
+        name: page_id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Page"
+          description: 成功获取页面
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: 页面不存在
+      summary: 获取页面
+      tags:
+      - 页面
+      x-accepts:
+      - application/json
+    patch:
+      description: 更新页面的属性
+      operationId: updatePage
+      parameters:
+      - description: 页面ID
+        explode: false
+        in: path
+        name: page_id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePageRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Page"
+          description: 页面更新成功
+      summary: 更新页面属性
+      tags:
+      - 页面
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /v1/blocks/{block_id}:
+    delete:
+      description: 删除指定块及其所有子块
+      operationId: deleteBlock
+      parameters:
+      - description: 块ID
+        explode: false
+        in: path
+        name: block_id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteBlockResponse"
+          description: 块删除成功
+      summary: 删除块
+      tags:
+      - 块
+      x-accepts:
+      - application/json
+    get:
+      description: 根据ID获取块对象
+      operationId: getBlock
+      parameters:
+      - description: 块ID
+        explode: false
+        in: path
+        name: block_id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Block"
+          description: 成功获取块
+      summary: 获取块
+      tags:
+      - 块
+      x-accepts:
+      - application/json
+    patch:
+      description: 更新指定块的内容或属性
+      operationId: updateBlock
+      parameters:
+      - description: 块ID
+        explode: false
+        in: path
+        name: block_id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateBlockRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Block"
+          description: 块更新成功
+      summary: 更新块
+      tags:
+      - 块
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /v1/blocks/{block_id}/children:
+    get:
+      description: 获取指定块的子块列表
+      operationId: getBlockChildren
+      parameters:
+      - description: 父块ID
+        explode: false
+        in: path
+        name: block_id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - description: 分页游标，使用子块的ID作为游标值
+        explode: true
+        in: query
+        name: start_cursor
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: 每页记录数
+        explode: true
+        in: query
+        name: page_size
+        required: false
+        schema:
+          default: 50
+          maximum: 100
+          minimum: 1
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetBlockChildrenResponse"
+          description: 成功获取子块列表
+      summary: 获取子块
+      tags:
+      - 块
+      x-accepts:
+      - application/json
+    patch:
+      description: 向指定块追加一个或多个子块
+      operationId: appendBlockChildren
+      parameters:
+      - description: 父块ID
+        explode: false
+        in: path
+        name: block_id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AppendBlockChildrenRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppendBlockChildrenResponse"
+          description: 子块创建成功
+      summary: 追加子块
+      tags:
+      - 块
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /v1/pages/search:
+    post:
+      description: 通过向量搜索在空间中查找相关页面和内容
+      operationId: searchPages
+      requestBody:
+        content:
+          application/json:
+            example:
+              query: 我今天有什么事情需要做
+            schema:
+              $ref: "#/components/schemas/SearchRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                - uuid: c83e8574-7600-4ac0-beb3-2ab98a906012
+                  title: 会议
+                  content: 产品定义会议举行...
+                  type: space
+                - uuid: 889131e4-60bd-4b17-a725-e112b07156a9
+                  title: 发送邮件
+                  content: 发送邮件...
+                  type: space
+              schema:
+                $ref: "#/components/schemas/SearchResult"
+          description: 搜索成功
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: 请求参数错误
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: 未授权
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: 权限不足
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: 内部服务器错误
+      summary: 搜索页面
+      tags:
+      - 页面
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+components:
+  schemas:
+    Database:
+      example:
+        created_time: 2023-12-01T10:00:00.000Z
+        parent:
+          database_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          type: database_id
+        icon:
+          emoji: 📝
+          type: emoji
+        title:
+        - plain_text: plain_text
+          equation:
+            expression: expression
+          annotations:
+            code: true
+            color: default
+            underline: true
+            bold: true
+            strikethrough: true
+            italic: true
+          text:
+            link:
+              url: url
+            content: content
+          href: href
+          type: text
+          mention:
+            date:
+              start: start
+              end: end
+              time_zone: time_zone
+            page:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            type: user
+            user:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        - plain_text: plain_text
+          equation:
+            expression: expression
+          annotations:
+            code: true
+            color: default
+            underline: true
+            bold: true
+            strikethrough: true
+            italic: true
+          text:
+            link:
+              url: url
+            content: content
+          href: href
+          type: text
+          mention:
+            date:
+              start: start
+              end: end
+              time_zone: time_zone
+            page:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            type: user
+            user:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        created_by:
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          object: user
+        url: https://buildin.ai/docs/d9824bdc-8445-4327-be8b-5b47500af6ce
+        cover:
+          external:
+            url: url
+          type: external
+        archived: true
+        last_edited_time: 2000-01-23T04:56:07.000+00:00
+        is_inline: true
+        id: d9824bdc-8445-4327-be8b-5b47500af6ce
+        last_edited_by:
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          object: user
+        properties:
+          key:
+            name: name
+            id: id
+            type: ""
+            title: "{}"
+        object: database
+      properties:
+        object:
+          enum:
+          - database
+          type: string
+        id:
+          example: d9824bdc-8445-4327-be8b-5b47500af6ce
+          format: uuid
+          type: string
+        created_time:
+          example: 2023-12-01T10:00:00.000Z
+          format: date-time
+          type: string
+        created_by:
+          $ref: "#/components/schemas/User"
+        last_edited_time:
+          format: date-time
+          type: string
+        last_edited_by:
+          $ref: "#/components/schemas/User"
+        title:
+          items:
+            $ref: "#/components/schemas/RichTextItem"
+          type: array
+        icon:
+          $ref: "#/components/schemas/Icon"
+        cover:
+          $ref: "#/components/schemas/Cover"
+        properties:
+          additionalProperties:
+            $ref: "#/components/schemas/PropertySchema"
+        parent:
+          $ref: "#/components/schemas/Parent"
+        url:
+          example: https://buildin.ai/docs/d9824bdc-8445-4327-be8b-5b47500af6ce
+          type: string
+        archived:
+          type: boolean
+        is_inline:
+          type: boolean
+    Page:
+      example:
+        cover:
+          external:
+            url: url
+          type: external
+        created_time: 2000-01-23T04:56:07.000+00:00
+        archived: true
+        parent:
+          database_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          type: database_id
+        last_edited_time: 2000-01-23T04:56:07.000+00:00
+        icon:
+          emoji: 📝
+          type: emoji
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        created_by:
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          object: user
+        last_edited_by:
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          object: user
+        properties:
+          key:
+            id: id
+            type: ""
+            title:
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        url: url
+        object: page
+      properties:
+        object:
+          enum:
+          - page
+          type: string
+        id:
+          format: uuid
+          type: string
+        created_time:
+          format: date-time
+          type: string
+        created_by:
+          $ref: "#/components/schemas/User"
+        last_edited_time:
+          format: date-time
+          type: string
+        last_edited_by:
+          $ref: "#/components/schemas/User"
+        archived:
+          type: boolean
+        properties:
+          additionalProperties:
+            $ref: "#/components/schemas/PropertyValue"
+        parent:
+          $ref: "#/components/schemas/Parent"
+        url:
+          type: string
+        icon:
+          $ref: "#/components/schemas/Icon"
+        cover:
+          $ref: "#/components/schemas/Cover"
+    Block:
+      example:
+        parent:
+          database_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          type: database_id
+        created_time: 2000-01-23T04:56:07.000+00:00
+        archived: true
+        last_edited_time: 2000-01-23T04:56:07.000+00:00
+        has_children: true
+        data:
+          expression: expression
+          table_width: 0
+          icon:
+            emoji: 📝
+            type: emoji
+          caption:
+          - plain_text: plain_text
+            equation:
+              expression: expression
+            annotations:
+              code: true
+              color: default
+              underline: true
+              bold: true
+              strikethrough: true
+              italic: true
+            text:
+              link:
+                url: url
+              content: content
+            href: href
+            type: text
+            mention:
+              date:
+                start: start
+                end: end
+                time_zone: time_zone
+              page:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              type: user
+              user:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          - plain_text: plain_text
+            equation:
+              expression: expression
+            annotations:
+              code: true
+              color: default
+              underline: true
+              bold: true
+              strikethrough: true
+              italic: true
+            text:
+              link:
+                url: url
+              content: content
+            href: href
+            type: text
+            mention:
+              date:
+                start: start
+                end: end
+                time_zone: time_zone
+              page:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              type: user
+              user:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          language: language
+          has_row_header: true
+          title: title
+          url: url
+          page_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          external:
+            url: url
+          cells:
+          - - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          - - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          file:
+            expiry_time: 2000-01-23T04:56:07.000+00:00
+            url: url
+          background_color: default
+          rich_text:
+          - plain_text: plain_text
+            equation:
+              expression: expression
+            annotations:
+              code: true
+              color: default
+              underline: true
+              bold: true
+              strikethrough: true
+              italic: true
+            text:
+              link:
+                url: url
+              content: content
+            href: href
+            type: text
+            mention:
+              date:
+                start: start
+                end: end
+                time_zone: time_zone
+              page:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              type: user
+              user:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          - plain_text: plain_text
+            equation:
+              expression: expression
+            annotations:
+              code: true
+              color: default
+              underline: true
+              bold: true
+              strikethrough: true
+              italic: true
+            text:
+              link:
+                url: url
+              content: content
+            href: href
+            type: text
+            mention:
+              date:
+                start: start
+                end: end
+                time_zone: time_zone
+              page:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              type: user
+              user:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          checked: true
+          text_color: default
+          has_column_header: true
+          synced_from:
+            block_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        type: paragraph
+        created_by:
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          object: user
+        last_edited_by:
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          object: user
+        object: block
+      properties:
+        object:
+          enum:
+          - block
+          type: string
+        id:
+          format: uuid
+          type: string
+        parent:
+          $ref: "#/components/schemas/Parent"
+        type:
+          enum:
+          - paragraph
+          - heading_1
+          - heading_2
+          - heading_3
+          - bulleted_list_item
+          - numbered_list_item
+          - to_do
+          - quote
+          - toggle
+          - code
+          - image
+          - file
+          - bookmark
+          - embed
+          - callout
+          - equation
+          - link_to_page
+          - template
+          - synced_block
+          - divider
+          - column_list
+          - column
+          - table
+          - table_row
+          - child_page
+          - child_database
+          type: string
+        created_time:
+          format: date-time
+          type: string
+        created_by:
+          $ref: "#/components/schemas/User"
+        last_edited_time:
+          format: date-time
+          type: string
+        last_edited_by:
+          $ref: "#/components/schemas/User"
+        archived:
+          type: boolean
+        has_children:
+          type: boolean
+        data:
+          $ref: "#/components/schemas/BlockData"
+    BlockData:
+      additionalProperties: false
+      description: 块类型特定的数据内容
+      example:
+        expression: expression
+        table_width: 0
+        icon:
+          emoji: 📝
+          type: emoji
+        caption:
+        - plain_text: plain_text
+          equation:
+            expression: expression
+          annotations:
+            code: true
+            color: default
+            underline: true
+            bold: true
+            strikethrough: true
+            italic: true
+          text:
+            link:
+              url: url
+            content: content
+          href: href
+          type: text
+          mention:
+            date:
+              start: start
+              end: end
+              time_zone: time_zone
+            page:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            type: user
+            user:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        - plain_text: plain_text
+          equation:
+            expression: expression
+          annotations:
+            code: true
+            color: default
+            underline: true
+            bold: true
+            strikethrough: true
+            italic: true
+          text:
+            link:
+              url: url
+            content: content
+          href: href
+          type: text
+          mention:
+            date:
+              start: start
+              end: end
+              time_zone: time_zone
+            page:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            type: user
+            user:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        language: language
+        has_row_header: true
+        title: title
+        url: url
+        page_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        external:
+          url: url
+        cells:
+        - - plain_text: plain_text
+            equation:
+              expression: expression
+            annotations:
+              code: true
+              color: default
+              underline: true
+              bold: true
+              strikethrough: true
+              italic: true
+            text:
+              link:
+                url: url
+              content: content
+            href: href
+            type: text
+            mention:
+              date:
+                start: start
+                end: end
+                time_zone: time_zone
+              page:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              type: user
+              user:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          - plain_text: plain_text
+            equation:
+              expression: expression
+            annotations:
+              code: true
+              color: default
+              underline: true
+              bold: true
+              strikethrough: true
+              italic: true
+            text:
+              link:
+                url: url
+              content: content
+            href: href
+            type: text
+            mention:
+              date:
+                start: start
+                end: end
+                time_zone: time_zone
+              page:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              type: user
+              user:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        - - plain_text: plain_text
+            equation:
+              expression: expression
+            annotations:
+              code: true
+              color: default
+              underline: true
+              bold: true
+              strikethrough: true
+              italic: true
+            text:
+              link:
+                url: url
+              content: content
+            href: href
+            type: text
+            mention:
+              date:
+                start: start
+                end: end
+                time_zone: time_zone
+              page:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              type: user
+              user:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          - plain_text: plain_text
+            equation:
+              expression: expression
+            annotations:
+              code: true
+              color: default
+              underline: true
+              bold: true
+              strikethrough: true
+              italic: true
+            text:
+              link:
+                url: url
+              content: content
+            href: href
+            type: text
+            mention:
+              date:
+                start: start
+                end: end
+                time_zone: time_zone
+              page:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              type: user
+              user:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        file:
+          expiry_time: 2000-01-23T04:56:07.000+00:00
+          url: url
+        background_color: default
+        rich_text:
+        - plain_text: plain_text
+          equation:
+            expression: expression
+          annotations:
+            code: true
+            color: default
+            underline: true
+            bold: true
+            strikethrough: true
+            italic: true
+          text:
+            link:
+              url: url
+            content: content
+          href: href
+          type: text
+          mention:
+            date:
+              start: start
+              end: end
+              time_zone: time_zone
+            page:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            type: user
+            user:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        - plain_text: plain_text
+          equation:
+            expression: expression
+          annotations:
+            code: true
+            color: default
+            underline: true
+            bold: true
+            strikethrough: true
+            italic: true
+          text:
+            link:
+              url: url
+            content: content
+          href: href
+          type: text
+          mention:
+            date:
+              start: start
+              end: end
+              time_zone: time_zone
+            page:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            type: user
+            user:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        checked: true
+        text_color: default
+        has_column_header: true
+        synced_from:
+          block_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        rich_text:
+          description: 富文本内容
+          items:
+            $ref: "#/components/schemas/RichTextItem"
+          type: array
+        text_color:
+          description: 文本颜色
+          enum:
+          - default
+          - gray
+          - brown
+          - orange
+          - yellow
+          - green
+          - blue
+          - purple
+          - pink
+          - red
+          type: string
+        background_color:
+          description: 背景颜色
+          enum:
+          - default
+          - gray
+          - brown
+          - orange
+          - yellow
+          - green
+          - blue
+          - purple
+          - pink
+          - red
+          type: string
+        checked:
+          description: 待办事项是否完成
+          type: boolean
+        language:
+          description: 代码块语言
+          type: string
+        url:
+          description: 链接地址
+          type: string
+        caption:
+          description: 说明文字
+          items:
+            $ref: "#/components/schemas/RichTextItem"
+          type: array
+        icon:
+          $ref: "#/components/schemas/Icon"
+        expression:
+          description: 数学公式表达式
+          type: string
+        page_id:
+          description: 页面引用ID
+          format: uuid
+          type: string
+        table_width:
+          description: 表格列数
+          type: integer
+        has_column_header:
+          description: 是否有列标题
+          type: boolean
+        has_row_header:
+          description: 是否有行标题
+          type: boolean
+        cells:
+          description: 表格单元格内容
+          items:
+            items:
+              $ref: "#/components/schemas/RichTextItem"
+            type: array
+          type: array
+        title:
+          description: 子页面或子数据库标题
+          type: string
+        synced_from:
+          $ref: "#/components/schemas/BlockData_synced_from"
+        file:
+          $ref: "#/components/schemas/BlockData_file"
+        external:
+          $ref: "#/components/schemas/BlockData_external"
+    RichTextItem:
+      example:
+        plain_text: plain_text
+        equation:
+          expression: expression
+        annotations:
+          code: true
+          color: default
+          underline: true
+          bold: true
+          strikethrough: true
+          italic: true
+        text:
+          link:
+            url: url
+          content: content
+        href: href
+        type: text
+        mention:
+          date:
+            start: start
+            end: end
+            time_zone: time_zone
+          page:
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          type: user
+          user:
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        type:
+          enum:
+          - text
+          - mention
+          - equation
+          type: string
+        text:
+          $ref: "#/components/schemas/RichTextItem_text"
+        mention:
+          $ref: "#/components/schemas/RichTextItem_mention"
+        equation:
+          $ref: "#/components/schemas/RichTextItem_equation"
+        annotations:
+          $ref: "#/components/schemas/RichTextItem_annotations"
+        plain_text:
+          type: string
+        href:
+          type: string
+          nullable: true
+    RichText:
+      description: 富文本内容数组
+      items:
+        $ref: "#/components/schemas/RichTextItem"
+      type: array
+    User:
+      example:
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        object: user
+      properties:
+        object:
+          enum:
+          - user
+          type: string
+        id:
+          format: uuid
+          type: string
+    IconEmoji:
+      example:
+        emoji: 📝
+        type: emoji
+      properties:
+        type:
+          enum:
+          - emoji
+          type: string
+        emoji:
+          example: 📝
+          type: string
+      required:
+      - emoji
+      - type
+    IconExternalDetail:
+      properties:
+        url:
+          type: string
+    IconExternal:
+      properties:
+        type:
+          enum:
+          - external
+          type: string
+        external:
+          $ref: "#/components/schemas/IconExternalDetail"
+      required:
+      - external
+      - type
+    IconFileDetail:
+      properties:
+        url:
+          type: string
+        expiry_time:
+          format: date-time
+          type: string
+    IconFile:
+      properties:
+        type:
+          enum:
+          - file
+          type: string
+        file:
+          $ref: "#/components/schemas/IconFileDetail"
+      required:
+      - file
+      - type
+    Icon:
+      oneOf:
+      - $ref: "#/components/schemas/IconEmoji"
+      - $ref: "#/components/schemas/IconExternal"
+      - $ref: "#/components/schemas/IconFile"
+    Cover:
+      example:
+        external:
+          url: url
+        type: external
+      properties:
+        type:
+          enum:
+          - external
+          type: string
+        external:
+          $ref: "#/components/schemas/Cover_external"
+    ParentDatabaseId:
+      example:
+        database_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        type: database_id
+      properties:
+        type:
+          enum:
+          - database_id
+          type: string
+        database_id:
+          format: uuid
+          type: string
+      required:
+      - database_id
+      - type
+    ParentPageId:
+      properties:
+        type:
+          enum:
+          - page_id
+          type: string
+        page_id:
+          format: uuid
+          type: string
+      required:
+      - page_id
+      - type
+    ParentBlockId:
+      properties:
+        type:
+          enum:
+          - block_id
+          type: string
+        block_id:
+          format: uuid
+          type: string
+      required:
+      - block_id
+      - type
+    Parent:
+      oneOf:
+      - $ref: "#/components/schemas/ParentDatabaseId"
+      - $ref: "#/components/schemas/ParentPageId"
+      - $ref: "#/components/schemas/ParentBlockId"
+    PropertySchema:
+      anyOf:
+      - $ref: "#/components/schemas/PropertySchemaTitle"
+      - $ref: "#/components/schemas/PropertySchemaRichText"
+      - $ref: "#/components/schemas/PropertySchemaNumber"
+      - $ref: "#/components/schemas/PropertySchemaSelect"
+      - $ref: "#/components/schemas/PropertySchemaMultiSelect"
+      - $ref: "#/components/schemas/PropertySchemaDate"
+      - $ref: "#/components/schemas/PropertySchemaPeople"
+      - $ref: "#/components/schemas/PropertySchemaFiles"
+      - $ref: "#/components/schemas/PropertySchemaCheckbox"
+      - $ref: "#/components/schemas/PropertySchemaUrl"
+      - $ref: "#/components/schemas/PropertySchemaEmail"
+      - $ref: "#/components/schemas/PropertySchemaPhoneNumber"
+      - $ref: "#/components/schemas/PropertySchemaFormula"
+      - $ref: "#/components/schemas/PropertySchemaRelation"
+    CreatePagePropertyValue:
+      oneOf:
+      - $ref: "#/components/schemas/CreatePagePropertyValueTitle"
+      - $ref: "#/components/schemas/CreatePagePropertyValueRichText"
+      - $ref: "#/components/schemas/CreatePagePropertyValueSelect"
+      - $ref: "#/components/schemas/CreatePagePropertyValueMultiSelect"
+      - $ref: "#/components/schemas/CreatePagePropertyValueNumber"
+      - $ref: "#/components/schemas/CreatePagePropertyValueCheckbox"
+      - $ref: "#/components/schemas/CreatePagePropertyValueDate"
+      - $ref: "#/components/schemas/CreatePagePropertyValuePeople"
+      - $ref: "#/components/schemas/CreatePagePropertyValueFiles"
+      - $ref: "#/components/schemas/CreatePagePropertyValueUrl"
+      - $ref: "#/components/schemas/CreatePagePropertyValueEmail"
+      - $ref: "#/components/schemas/CreatePagePropertyValuePhoneNumber"
+      - $ref: "#/components/schemas/CreatePagePropertyValueRelation"
+    PropertyValue:
+      oneOf:
+      - $ref: "#/components/schemas/PropertyValueTitle"
+      - $ref: "#/components/schemas/PropertyValueRichText"
+      - $ref: "#/components/schemas/PropertyValueNumber"
+      - $ref: "#/components/schemas/PropertyValueSelect"
+      - $ref: "#/components/schemas/PropertyValueMultiSelect"
+      - $ref: "#/components/schemas/PropertyValueDate"
+      - $ref: "#/components/schemas/PropertyValuePeople"
+      - $ref: "#/components/schemas/PropertyValueFiles"
+      - $ref: "#/components/schemas/PropertyValueCheckbox"
+      - $ref: "#/components/schemas/PropertyValueUrl"
+      - $ref: "#/components/schemas/PropertyValueEmail"
+      - $ref: "#/components/schemas/PropertyValuePhoneNumber"
+      - $ref: "#/components/schemas/PropertyValueRelation"
+    Error:
+      example:
+        code: validation_error
+        message: message
+        object: error
+        status: 0
+      properties:
+        object:
+          enum:
+          - error
+          type: string
+        status:
+          type: integer
+        code:
+          enum:
+          - validation_error
+          - unauthorized
+          - forbidden
+          - not_found
+          - rate_limit
+          - internal_error
+          type: string
+        message:
+          type: string
+    PaginatedList:
+      properties:
+        object:
+          enum:
+          - list
+          type: string
+        results:
+          items: {}
+          type: array
+        next_cursor:
+          description: 下一页游标，使用最后一个项目的ID作为游标值
+          type: string
+          nullable: true
+        has_more:
+          type: boolean
+    PropertySchemaTitle:
+      example:
+        name: name
+        id: id
+        type: ""
+        title: "{}"
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type: {}
+        title:
+          additionalProperties: false
+          type: object
+    PropertySchemaRichText:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type: {}
+        rich_text:
+          additionalProperties: false
+          type: object
+    PropertySchemaNumber:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type: {}
+        number:
+          $ref: "#/components/schemas/PropertySchemaNumber_number"
+    PropertySchemaSelectOption:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        color:
+          enum:
+          - default
+          - gray
+          - brown
+          - orange
+          - yellow
+          - green
+          - blue
+          - purple
+          - pink
+          - red
+          type: string
+    PropertySchemaSelect:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type: {}
+        select:
+          $ref: "#/components/schemas/PropertySchemaSelect_select"
+    PropertySchemaMultiSelect:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type: {}
+        multi_select:
+          $ref: "#/components/schemas/PropertySchemaSelect_select"
+    PropertySchemaDate:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type: {}
+        date:
+          additionalProperties: false
+          type: object
+    PropertySchemaPeople:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type: {}
+        people:
+          additionalProperties: false
+          type: object
+    PropertySchemaFiles:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type: {}
+        files:
+          additionalProperties: false
+          type: object
+    PropertySchemaCheckbox:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type: {}
+        checkbox:
+          additionalProperties: false
+          type: object
+    PropertySchemaUrl:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type: {}
+        url:
+          additionalProperties: false
+          type: object
+    PropertySchemaEmail:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type: {}
+        email:
+          additionalProperties: false
+          type: object
+    PropertySchemaPhoneNumber:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type: {}
+        phone_number:
+          additionalProperties: false
+          type: object
+    PropertySchemaFormula:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type: {}
+        formula:
+          $ref: "#/components/schemas/PropertySchemaFormula_formula"
+    PropertySchemaRelation:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type: {}
+        relation:
+          $ref: "#/components/schemas/PropertySchemaRelation_relation"
+    CreatePagePropertyValueTitle:
+      example:
+        type: ""
+        title:
+        - plain_text: plain_text
+          equation:
+            expression: expression
+          annotations:
+            code: true
+            color: default
+            underline: true
+            bold: true
+            strikethrough: true
+            italic: true
+          text:
+            link:
+              url: url
+            content: content
+          href: href
+          type: text
+          mention:
+            date:
+              start: start
+              end: end
+              time_zone: time_zone
+            page:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            type: user
+            user:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        - plain_text: plain_text
+          equation:
+            expression: expression
+          annotations:
+            code: true
+            color: default
+            underline: true
+            bold: true
+            strikethrough: true
+            italic: true
+          text:
+            link:
+              url: url
+            content: content
+          href: href
+          type: text
+          mention:
+            date:
+              start: start
+              end: end
+              time_zone: time_zone
+            page:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            type: user
+            user:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        type: {}
+        title:
+          items:
+            $ref: "#/components/schemas/RichTextItem"
+          type: array
+      required:
+      - title
+      - type
+    CreatePagePropertyValueRichText:
+      properties:
+        type: {}
+        rich_text:
+          items:
+            $ref: "#/components/schemas/RichTextItem"
+          type: array
+      required:
+      - rich_text
+      - type
+    CreatePagePropertyValueSelect:
+      properties:
+        type: {}
+        select:
+          $ref: "#/components/schemas/CreatePagePropertyValueSelect_select"
+      required:
+      - select
+      - type
+    CreatePagePropertyValueMultiSelect:
+      properties:
+        type: {}
+        multi_select:
+          items:
+            $ref: "#/components/schemas/CreatePagePropertyValueSelect_select"
+          type: array
+      required:
+      - multi_select
+      - type
+    CreatePagePropertyValueNumber:
+      properties:
+        type: {}
+        number:
+          type: number
+      required:
+      - number
+      - type
+    CreatePagePropertyValueCheckbox:
+      properties:
+        type: {}
+        checkbox:
+          type: boolean
+      required:
+      - checkbox
+      - type
+    CreatePagePropertyValueDate:
+      properties:
+        id:
+          description: 属性ID（可选）
+          type: string
+        type: {}
+        date:
+          $ref: "#/components/schemas/CreatePagePropertyValueDate_date"
+      required:
+      - date
+      - type
+    CreatePagePropertyValuePeople:
+      properties:
+        type: {}
+        people:
+          items:
+            $ref: "#/components/schemas/CreatePagePropertyValuePeople_people_inner"
+          type: array
+      required:
+      - people
+      - type
+    CreatePagePropertyValueFiles:
+      properties:
+        type: {}
+        files:
+          items:
+            $ref: "#/components/schemas/CreatePagePropertyValueFiles_files_inner"
+          type: array
+      required:
+      - files
+      - type
+    CreatePagePropertyValueUrl:
+      properties:
+        type: {}
+        url:
+          format: uri
+          type: string
+      required:
+      - type
+      - url
+    CreatePagePropertyValueEmail:
+      properties:
+        type: {}
+        email:
+          format: email
+          type: string
+      required:
+      - email
+      - type
+    CreatePagePropertyValuePhoneNumber:
+      properties:
+        type: {}
+        phone_number:
+          type: string
+      required:
+      - phone_number
+      - type
+    CreatePagePropertyValueRelation:
+      properties:
+        type: {}
+        relation:
+          items:
+            $ref: "#/components/schemas/CreatePagePropertyValueRelation_relation_inner"
+          type: array
+      required:
+      - relation
+      - type
+    PropertyValueTitle:
+      example:
+        id: id
+        type: ""
+        title:
+        - plain_text: plain_text
+          equation:
+            expression: expression
+          annotations:
+            code: true
+            color: default
+            underline: true
+            bold: true
+            strikethrough: true
+            italic: true
+          text:
+            link:
+              url: url
+            content: content
+          href: href
+          type: text
+          mention:
+            date:
+              start: start
+              end: end
+              time_zone: time_zone
+            page:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            type: user
+            user:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        - plain_text: plain_text
+          equation:
+            expression: expression
+          annotations:
+            code: true
+            color: default
+            underline: true
+            bold: true
+            strikethrough: true
+            italic: true
+          text:
+            link:
+              url: url
+            content: content
+          href: href
+          type: text
+          mention:
+            date:
+              start: start
+              end: end
+              time_zone: time_zone
+            page:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            type: user
+            user:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        id:
+          type: string
+        type: {}
+        title:
+          items:
+            $ref: "#/components/schemas/RichTextItem"
+          type: array
+    PropertyValueRichText:
+      properties:
+        id:
+          type: string
+        type: {}
+        rich_text:
+          items:
+            $ref: "#/components/schemas/RichTextItem"
+          type: array
+    PropertyValueNumber:
+      properties:
+        id:
+          type: string
+        type: {}
+        number:
+          type: number
+          nullable: true
+    PropertyValueSelect:
+      properties:
+        id:
+          type: string
+        type: {}
+        select:
+          $ref: "#/components/schemas/PropertyValueSelect_select"
+    PropertyValueMultiSelect:
+      properties:
+        id:
+          type: string
+        type: {}
+        multi_select:
+          items:
+            $ref: "#/components/schemas/PropertyValueMultiSelect_multi_select_inner"
+          type: array
+    PropertyValueDate:
+      properties:
+        id:
+          type: string
+        type: {}
+        date:
+          $ref: "#/components/schemas/PropertyValueDate_date"
+    PropertyValuePeople:
+      properties:
+        id:
+          type: string
+        type: {}
+        people:
+          items:
+            $ref: "#/components/schemas/PropertyValuePeople_people_inner"
+          type: array
+    PropertyValueFiles:
+      properties:
+        id:
+          type: string
+        type: {}
+        files:
+          items:
+            $ref: "#/components/schemas/PropertyValueFiles_files_inner"
+          type: array
+    PropertyValueCheckbox:
+      properties:
+        id:
+          type: string
+        type: {}
+        checkbox:
+          type: boolean
+    PropertyValueUrl:
+      properties:
+        id:
+          type: string
+        type: {}
+        url:
+          type: string
+          nullable: true
+    PropertyValueEmail:
+      properties:
+        id:
+          type: string
+        type: {}
+        email:
+          type: string
+          nullable: true
+    PropertyValuePhoneNumber:
+      properties:
+        id:
+          type: string
+        type: {}
+        phone_number:
+          type: string
+          nullable: true
+    PropertyValueRelation:
+      properties:
+        id:
+          type: string
+        type: {}
+        relation:
+          items:
+            $ref: "#/components/schemas/CreatePagePropertyValueRelation_relation_inner"
+          type: array
+    CreateDatabaseRequest:
+      example:
+        cover:
+          external:
+            url: url
+          type: external
+        parent:
+          database_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          type: database_id
+        icon:
+          emoji: 📝
+          type: emoji
+        is_inline: true
+        title:
+        - plain_text: plain_text
+          equation:
+            expression: expression
+          annotations:
+            code: true
+            color: default
+            underline: true
+            bold: true
+            strikethrough: true
+            italic: true
+          text:
+            link:
+              url: url
+            content: content
+          href: href
+          type: text
+          mention:
+            date:
+              start: start
+              end: end
+              time_zone: time_zone
+            page:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            type: user
+            user:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        - plain_text: plain_text
+          equation:
+            expression: expression
+          annotations:
+            code: true
+            color: default
+            underline: true
+            bold: true
+            strikethrough: true
+            italic: true
+          text:
+            link:
+              url: url
+            content: content
+          href: href
+          type: text
+          mention:
+            date:
+              start: start
+              end: end
+              time_zone: time_zone
+            page:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            type: user
+            user:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        properties:
+          key:
+            name: name
+            id: id
+            type: ""
+            title: "{}"
+      properties:
+        parent:
+          $ref: "#/components/schemas/Parent"
+        title:
+          items:
+            $ref: "#/components/schemas/RichTextItem"
+          type: array
+        icon:
+          $ref: "#/components/schemas/Icon"
+        cover:
+          $ref: "#/components/schemas/Cover"
+        properties:
+          additionalProperties:
+            $ref: "#/components/schemas/PropertySchema"
+        is_inline:
+          description: 是否为内联数据库
+          type: boolean
+      required:
+      - properties
+      - title
+    UpdateDatabaseRequest:
+      example:
+        cover:
+          external:
+            url: url
+          type: external
+        archived: true
+        icon:
+          emoji: 📝
+          type: emoji
+        title:
+        - plain_text: plain_text
+          equation:
+            expression: expression
+          annotations:
+            code: true
+            color: default
+            underline: true
+            bold: true
+            strikethrough: true
+            italic: true
+          text:
+            link:
+              url: url
+            content: content
+          href: href
+          type: text
+          mention:
+            date:
+              start: start
+              end: end
+              time_zone: time_zone
+            page:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            type: user
+            user:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        - plain_text: plain_text
+          equation:
+            expression: expression
+          annotations:
+            code: true
+            color: default
+            underline: true
+            bold: true
+            strikethrough: true
+            italic: true
+          text:
+            link:
+              url: url
+            content: content
+          href: href
+          type: text
+          mention:
+            date:
+              start: start
+              end: end
+              time_zone: time_zone
+            page:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            type: user
+            user:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        properties:
+          key:
+            name: name
+            id: id
+            type: ""
+            title: "{}"
+      properties:
+        title:
+          items:
+            $ref: "#/components/schemas/RichTextItem"
+          type: array
+        icon:
+          $ref: "#/components/schemas/Icon"
+        cover:
+          $ref: "#/components/schemas/Cover"
+        properties:
+          additionalProperties:
+            $ref: "#/components/schemas/UpdateDatabaseRequest_properties_value"
+        archived:
+          type: boolean
+    QueryDatabaseRequest:
+      example:
+        start_cursor: start_cursor
+        page_size: 8
+      properties:
+        start_cursor:
+          description: 分页游标，使用页面ID作为游标值
+          type: string
+        page_size:
+          default: 50
+          description: 每页记录数
+          maximum: 100
+          minimum: 1
+          type: integer
+    QueryDatabaseResponse:
+      allOf:
+      - $ref: "#/components/schemas/PaginatedList"
+      - properties:
+          results:
+            items:
+              $ref: "#/components/schemas/Page"
+            type: array
+          type:
+            enum:
+            - page
+            type: string
+          page:
+            $ref: "#/components/schemas/QueryDatabaseResponse_allOf_page"
+      example:
+        next_cursor: next_cursor
+        has_more: true
+        page: null
+        type: page
+        results:
+        - cover:
+            external:
+              url: url
+            type: external
+          created_time: 2000-01-23T04:56:07.000+00:00
+          archived: true
+          parent:
+            database_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            type: database_id
+          last_edited_time: 2000-01-23T04:56:07.000+00:00
+          icon:
+            emoji: 📝
+            type: emoji
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          created_by:
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            object: user
+          last_edited_by:
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            object: user
+          properties:
+            key:
+              id: id
+              type: ""
+              title:
+              - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          url: url
+          object: page
+        - cover:
+            external:
+              url: url
+            type: external
+          created_time: 2000-01-23T04:56:07.000+00:00
+          archived: true
+          parent:
+            database_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            type: database_id
+          last_edited_time: 2000-01-23T04:56:07.000+00:00
+          icon:
+            emoji: 📝
+            type: emoji
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          created_by:
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            object: user
+          last_edited_by:
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            object: user
+          properties:
+            key:
+              id: id
+              type: ""
+              title:
+              - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          url: url
+          object: page
+        object: list
+    CreatePageRequest:
+      example:
+        cover:
+          external:
+            url: url
+          type: external
+        parent:
+          database_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          type: database_id
+        icon:
+          emoji: 📝
+          type: emoji
+        properties:
+          key:
+            type: ""
+            title:
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        parent:
+          $ref: "#/components/schemas/Parent"
+        icon:
+          $ref: "#/components/schemas/Icon"
+        cover:
+          $ref: "#/components/schemas/Cover"
+        properties:
+          additionalProperties:
+            $ref: "#/components/schemas/CreatePagePropertyValue"
+          description: 页面属性
+      required:
+      - properties
+    CreatePageResponse:
+      example:
+        createdAt: 2000-01-23T04:56:07.000+00:00
+        archived: true
+        parent:
+          database_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          type: database_id
+        updatedBy:
+          id: id
+          object: user
+        createdBy:
+          id: id
+          object: user
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        properties:
+          key:
+            id: id
+            type: ""
+            title:
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        url: https://openapi-generator.tech
+        object: page
+        updatedAt: 2000-01-23T04:56:07.000+00:00
+      properties:
+        object:
+          enum:
+          - page
+          type: string
+        id:
+          description: 页面ID
+          format: uuid
+          type: string
+        createdAt:
+          description: 创建时间
+          format: date-time
+          type: string
+        createdBy:
+          $ref: "#/components/schemas/CreatePageResponse_createdBy"
+        updatedAt:
+          description: 更新时间
+          format: date-time
+          type: string
+        updatedBy:
+          $ref: "#/components/schemas/CreatePageResponse_updatedBy"
+        archived:
+          description: 是否已归档
+          type: boolean
+        properties:
+          additionalProperties:
+            $ref: "#/components/schemas/PropertyValue"
+          description: 页面属性值
+        parent:
+          $ref: "#/components/schemas/CreatePageResponse_parent"
+        url:
+          description: 页面访问URL
+          format: uri
+          type: string
+    UpdatePageRequest:
+      example:
+        cover:
+          external:
+            url: url
+          type: external
+        archived: true
+        icon:
+          emoji: 📝
+          type: emoji
+        properties:
+          key:
+            id: id
+            type: ""
+            title:
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        properties:
+          additionalProperties:
+            $ref: "#/components/schemas/PropertyValue"
+        icon:
+          $ref: "#/components/schemas/Icon"
+        cover:
+          $ref: "#/components/schemas/Cover"
+        archived:
+          type: boolean
+    UpdateBlockRequest:
+      example:
+        archived: true
+        data:
+          expression: expression
+          table_width: 0
+          icon:
+            emoji: 📝
+            type: emoji
+          caption:
+          - plain_text: plain_text
+            equation:
+              expression: expression
+            annotations:
+              code: true
+              color: default
+              underline: true
+              bold: true
+              strikethrough: true
+              italic: true
+            text:
+              link:
+                url: url
+              content: content
+            href: href
+            type: text
+            mention:
+              date:
+                start: start
+                end: end
+                time_zone: time_zone
+              page:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              type: user
+              user:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          - plain_text: plain_text
+            equation:
+              expression: expression
+            annotations:
+              code: true
+              color: default
+              underline: true
+              bold: true
+              strikethrough: true
+              italic: true
+            text:
+              link:
+                url: url
+              content: content
+            href: href
+            type: text
+            mention:
+              date:
+                start: start
+                end: end
+                time_zone: time_zone
+              page:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              type: user
+              user:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          language: language
+          has_row_header: true
+          title: title
+          url: url
+          page_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          external:
+            url: url
+          cells:
+          - - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          - - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          file:
+            expiry_time: 2000-01-23T04:56:07.000+00:00
+            url: url
+          background_color: default
+          rich_text:
+          - plain_text: plain_text
+            equation:
+              expression: expression
+            annotations:
+              code: true
+              color: default
+              underline: true
+              bold: true
+              strikethrough: true
+              italic: true
+            text:
+              link:
+                url: url
+              content: content
+            href: href
+            type: text
+            mention:
+              date:
+                start: start
+                end: end
+                time_zone: time_zone
+              page:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              type: user
+              user:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          - plain_text: plain_text
+            equation:
+              expression: expression
+            annotations:
+              code: true
+              color: default
+              underline: true
+              bold: true
+              strikethrough: true
+              italic: true
+            text:
+              link:
+                url: url
+              content: content
+            href: href
+            type: text
+            mention:
+              date:
+                start: start
+                end: end
+                time_zone: time_zone
+              page:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              type: user
+              user:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          checked: true
+          text_color: default
+          has_column_header: true
+          synced_from:
+            block_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        type: paragraph
+      properties:
+        type:
+          enum:
+          - paragraph
+          - heading_1
+          - heading_2
+          - heading_3
+          - bulleted_list_item
+          - numbered_list_item
+          - to_do
+          - quote
+          - toggle
+          - code
+          - image
+          - file
+          - bookmark
+          - embed
+          - callout
+          - equation
+          - link_to_page
+          - template
+          - synced_block
+          - divider
+          - column_list
+          - column
+          - table
+          - table_row
+          - child_page
+          - child_database
+          type: string
+        archived:
+          description: 设置为true来归档（删除）块
+          type: boolean
+        data:
+          $ref: "#/components/schemas/BlockData"
+    DeleteBlockResponse:
+      example:
+        deleted: true
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        object: block
+      properties:
+        object:
+          enum:
+          - block
+          type: string
+        id:
+          format: uuid
+          type: string
+        deleted:
+          type: boolean
+    GetBlockChildrenResponse:
+      allOf:
+      - $ref: "#/components/schemas/PaginatedList"
+      - properties:
+          results:
+            items:
+              $ref: "#/components/schemas/Block"
+            type: array
+      example:
+        next_cursor: next_cursor
+        has_more: true
+        results:
+        - parent:
+            database_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            type: database_id
+          created_time: 2000-01-23T04:56:07.000+00:00
+          archived: true
+          last_edited_time: 2000-01-23T04:56:07.000+00:00
+          has_children: true
+          data:
+            expression: expression
+            table_width: 0
+            icon:
+              emoji: 📝
+              type: emoji
+            caption:
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            language: language
+            has_row_header: true
+            title: title
+            url: url
+            page_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            external:
+              url: url
+            cells:
+            - - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            file:
+              expiry_time: 2000-01-23T04:56:07.000+00:00
+              url: url
+            background_color: default
+            rich_text:
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            checked: true
+            text_color: default
+            has_column_header: true
+            synced_from:
+              block_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          type: paragraph
+          created_by:
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            object: user
+          last_edited_by:
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            object: user
+          object: block
+        - parent:
+            database_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            type: database_id
+          created_time: 2000-01-23T04:56:07.000+00:00
+          archived: true
+          last_edited_time: 2000-01-23T04:56:07.000+00:00
+          has_children: true
+          data:
+            expression: expression
+            table_width: 0
+            icon:
+              emoji: 📝
+              type: emoji
+            caption:
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            language: language
+            has_row_header: true
+            title: title
+            url: url
+            page_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            external:
+              url: url
+            cells:
+            - - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            file:
+              expiry_time: 2000-01-23T04:56:07.000+00:00
+              url: url
+            background_color: default
+            rich_text:
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            checked: true
+            text_color: default
+            has_column_header: true
+            synced_from:
+              block_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          type: paragraph
+          created_by:
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            object: user
+          last_edited_by:
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            object: user
+          object: block
+        object: list
+    AppendBlockChildrenRequest:
+      example:
+        children:
+        - data:
+            expression: expression
+            table_width: 0
+            icon:
+              emoji: 📝
+              type: emoji
+            caption:
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            language: language
+            has_row_header: true
+            title: title
+            url: url
+            page_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            external:
+              url: url
+            cells:
+            - - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            file:
+              expiry_time: 2000-01-23T04:56:07.000+00:00
+              url: url
+            background_color: default
+            rich_text:
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            checked: true
+            text_color: default
+            has_column_header: true
+            synced_from:
+              block_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          type: paragraph
+        - data:
+            expression: expression
+            table_width: 0
+            icon:
+              emoji: 📝
+              type: emoji
+            caption:
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            language: language
+            has_row_header: true
+            title: title
+            url: url
+            page_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            external:
+              url: url
+            cells:
+            - - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            file:
+              expiry_time: 2000-01-23T04:56:07.000+00:00
+              url: url
+            background_color: default
+            rich_text:
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            checked: true
+            text_color: default
+            has_column_header: true
+            synced_from:
+              block_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          type: paragraph
+        - data:
+            expression: expression
+            table_width: 0
+            icon:
+              emoji: 📝
+              type: emoji
+            caption:
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            language: language
+            has_row_header: true
+            title: title
+            url: url
+            page_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            external:
+              url: url
+            cells:
+            - - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            file:
+              expiry_time: 2000-01-23T04:56:07.000+00:00
+              url: url
+            background_color: default
+            rich_text:
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            checked: true
+            text_color: default
+            has_column_header: true
+            synced_from:
+              block_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          type: paragraph
+        - data:
+            expression: expression
+            table_width: 0
+            icon:
+              emoji: 📝
+              type: emoji
+            caption:
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            language: language
+            has_row_header: true
+            title: title
+            url: url
+            page_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            external:
+              url: url
+            cells:
+            - - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            file:
+              expiry_time: 2000-01-23T04:56:07.000+00:00
+              url: url
+            background_color: default
+            rich_text:
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            checked: true
+            text_color: default
+            has_column_header: true
+            synced_from:
+              block_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          type: paragraph
+        - data:
+            expression: expression
+            table_width: 0
+            icon:
+              emoji: 📝
+              type: emoji
+            caption:
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            language: language
+            has_row_header: true
+            title: title
+            url: url
+            page_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            external:
+              url: url
+            cells:
+            - - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            file:
+              expiry_time: 2000-01-23T04:56:07.000+00:00
+              url: url
+            background_color: default
+            rich_text:
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            checked: true
+            text_color: default
+            has_column_header: true
+            synced_from:
+              block_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          type: paragraph
+      properties:
+        children:
+          description: 要创建的子块列表，最多100个
+          items:
+            $ref: "#/components/schemas/AppendBlockChildrenRequest_children_inner"
+          maxItems: 100
+          type: array
+      required:
+      - children
+    AppendBlockChildrenResponse:
+      allOf:
+      - $ref: "#/components/schemas/PaginatedList"
+      - properties:
+          results:
+            items:
+              $ref: "#/components/schemas/Block"
+            type: array
+      example:
+        next_cursor: next_cursor
+        has_more: true
+        results:
+        - parent:
+            database_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            type: database_id
+          created_time: 2000-01-23T04:56:07.000+00:00
+          archived: true
+          last_edited_time: 2000-01-23T04:56:07.000+00:00
+          has_children: true
+          data:
+            expression: expression
+            table_width: 0
+            icon:
+              emoji: 📝
+              type: emoji
+            caption:
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            language: language
+            has_row_header: true
+            title: title
+            url: url
+            page_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            external:
+              url: url
+            cells:
+            - - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            file:
+              expiry_time: 2000-01-23T04:56:07.000+00:00
+              url: url
+            background_color: default
+            rich_text:
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            checked: true
+            text_color: default
+            has_column_header: true
+            synced_from:
+              block_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          type: paragraph
+          created_by:
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            object: user
+          last_edited_by:
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            object: user
+          object: block
+        - parent:
+            database_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            type: database_id
+          created_time: 2000-01-23T04:56:07.000+00:00
+          archived: true
+          last_edited_time: 2000-01-23T04:56:07.000+00:00
+          has_children: true
+          data:
+            expression: expression
+            table_width: 0
+            icon:
+              emoji: 📝
+              type: emoji
+            caption:
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            language: language
+            has_row_header: true
+            title: title
+            url: url
+            page_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            external:
+              url: url
+            cells:
+            - - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            file:
+              expiry_time: 2000-01-23T04:56:07.000+00:00
+              url: url
+            background_color: default
+            rich_text:
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            checked: true
+            text_color: default
+            has_column_header: true
+            synced_from:
+              block_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          type: paragraph
+          created_by:
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            object: user
+          last_edited_by:
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            object: user
+          object: block
+        object: list
+    SearchRequest:
+      example:
+        query: 网络渗透
+      properties:
+        query:
+          description: 搜索关键词
+          example: 网络渗透
+          type: string
+      required:
+      - query
+    SearchResult:
+      example:
+        data:
+        - title: 域渗透基础
+          type: space
+          uuid: c83e8574-7600-4ac0-beb3-2ab98a906012
+          content: |-
+            ## **域控制器(Domain Controller，简写DC)**
+
+            域控制器是域中的一台类似管理服务器的计算机...
+        - title: 域渗透基础
+          type: space
+          uuid: c83e8574-7600-4ac0-beb3-2ab98a906012
+          content: |-
+            ## **域控制器(Domain Controller，简写DC)**
+
+            域控制器是域中的一台类似管理服务器的计算机...
+        success: true
+      properties:
+        success:
+          description: 搜索是否成功
+          example: true
+          type: boolean
+        data:
+          items:
+            $ref: "#/components/schemas/SearchResult_data_inner"
+          type: array
+    BlockData_synced_from:
+      description: 同步块来源
+      example:
+        block_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        block_id:
+          format: uuid
+          type: string
+    BlockData_file:
+      description: 内部文件信息
+      example:
+        expiry_time: 2000-01-23T04:56:07.000+00:00
+        url: url
+      properties:
+        url:
+          type: string
+        expiry_time:
+          format: date-time
+          type: string
+    BlockData_external:
+      description: 外部链接信息
+      example:
+        url: url
+      properties:
+        url:
+          type: string
+    RichTextItem_text_link:
+      example:
+        url: url
+      properties:
+        url:
+          type: string
+      nullable: true
+    RichTextItem_text:
+      example:
+        link:
+          url: url
+        content: content
+      properties:
+        content:
+          type: string
+        link:
+          $ref: "#/components/schemas/RichTextItem_text_link"
+    RichTextItem_mention_user:
+      example:
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        id:
+          format: uuid
+          type: string
+    RichTextItem_mention_date:
+      example:
+        start: start
+        end: end
+        time_zone: time_zone
+      properties:
+        start:
+          type: string
+        end:
+          type: string
+          nullable: true
+        time_zone:
+          type: string
+          nullable: true
+    RichTextItem_mention:
+      example:
+        date:
+          start: start
+          end: end
+          time_zone: time_zone
+        page:
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        type: user
+        user:
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        type:
+          enum:
+          - user
+          - page
+          - date
+          type: string
+        user:
+          $ref: "#/components/schemas/RichTextItem_mention_user"
+        page:
+          $ref: "#/components/schemas/RichTextItem_mention_user"
+        date:
+          $ref: "#/components/schemas/RichTextItem_mention_date"
+    RichTextItem_equation:
+      example:
+        expression: expression
+      properties:
+        expression:
+          type: string
+    RichTextItem_annotations:
+      example:
+        code: true
+        color: default
+        underline: true
+        bold: true
+        strikethrough: true
+        italic: true
+      properties:
+        bold:
+          type: boolean
+        italic:
+          type: boolean
+        strikethrough:
+          type: boolean
+        underline:
+          type: boolean
+        code:
+          type: boolean
+        color:
+          enum:
+          - default
+          - gray
+          - brown
+          - orange
+          - yellow
+          - green
+          - blue
+          - purple
+          - pink
+          - red
+          type: string
+    Cover_external:
+      example:
+        url: url
+      properties:
+        url:
+          type: string
+    PropertySchemaNumber_number:
+      additionalProperties: false
+      properties:
+        format:
+          enum:
+          - number
+          - number_with_commas
+          - percent
+          - dollar
+          - euro
+          - pound
+          - yen
+          - yuan
+          type: string
+    PropertySchemaSelect_select:
+      additionalProperties: false
+      properties:
+        options:
+          items:
+            $ref: "#/components/schemas/PropertySchemaSelectOption"
+          type: array
+    PropertySchemaFormula_formula:
+      additionalProperties: false
+      properties:
+        expression:
+          description: 公式表达式
+          type: string
+      required:
+      - expression
+    PropertySchemaRelation_relation:
+      additionalProperties: false
+      properties:
+        database_id:
+          description: 关联的数据库ID
+          format: uuid
+          type: string
+        synced_property_id:
+          description: 同步属性ID
+          type: string
+      required:
+      - database_id
+    CreatePagePropertyValueSelect_select:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        color:
+          type: string
+      required:
+      - name
+    CreatePagePropertyValueDate_date:
+      properties:
+        start:
+          description: 开始日期（YYYY-MM-DD 或 YYYY-MM-DDTHH:MM格式）
+          type: string
+        end:
+          description: 结束日期（可选）
+          type: string
+        time_zone:
+          description: 时区
+          type: string
+      required:
+      - start
+    CreatePagePropertyValuePeople_people_inner:
+      properties:
+        object:
+          enum:
+          - user
+          type: string
+        id:
+          format: uuid
+          type: string
+      required:
+      - id
+    CreatePagePropertyValueFiles_files_inner_external:
+      properties:
+        url:
+          format: uri
+          type: string
+      required:
+      - url
+    CreatePagePropertyValueFiles_files_inner:
+      properties:
+        name:
+          type: string
+        type:
+          enum:
+          - external
+          type: string
+        external:
+          $ref: "#/components/schemas/CreatePagePropertyValueFiles_files_inner_external"
+      required:
+      - name
+    CreatePagePropertyValueRelation_relation_inner:
+      properties:
+        id:
+          format: uuid
+          type: string
+      required:
+      - id
+    PropertyValueSelect_select:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        color:
+          type: string
+      nullable: true
+    PropertyValueMultiSelect_multi_select_inner:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        color:
+          type: string
+    PropertyValueDate_date:
+      properties:
+        start:
+          description: 开始日期
+          type: string
+        end:
+          description: 结束日期（可选）
+          type: string
+        time_zone:
+          description: 时区
+          type: string
+      nullable: true
+    PropertyValuePeople_people_inner:
+      properties:
+        object:
+          enum:
+          - user
+          type: string
+        id:
+          format: uuid
+          type: string
+    PropertyValueFiles_files_inner:
+      properties:
+        name:
+          type: string
+        type:
+          enum:
+          - external
+          type: string
+        external:
+          $ref: "#/components/schemas/Cover_external"
+    UpdateDatabaseRequest_properties_value:
+      nullable: true
+      oneOf:
+      - $ref: "#/components/schemas/PropertySchema"
+    QueryDatabaseResponse_allOf_page:
+      type: object
+    CreatePageResponse_createdBy:
+      example:
+        id: id
+        object: user
+      properties:
+        object:
+          enum:
+          - user
+          type: string
+        id:
+          description: 创建者ID
+          type: string
+    CreatePageResponse_updatedBy:
+      example:
+        id: id
+        object: user
+      properties:
+        object:
+          enum:
+          - user
+          type: string
+        id:
+          description: 更新者ID
+          type: string
+    CreatePageResponse_parent_oneOf:
+      example:
+        database_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        type: database_id
+      properties:
+        type:
+          enum:
+          - database_id
+          type: string
+        database_id:
+          format: uuid
+          type: string
+      required:
+      - database_id
+      - type
+    CreatePageResponse_parent_oneOf_1:
+      properties:
+        type:
+          enum:
+          - page_id
+          type: string
+        page_id:
+          format: uuid
+          type: string
+      required:
+      - page_id
+      - type
+    CreatePageResponse_parent:
+      oneOf:
+      - $ref: "#/components/schemas/CreatePageResponse_parent_oneOf"
+      - $ref: "#/components/schemas/CreatePageResponse_parent_oneOf_1"
+    AppendBlockChildrenRequest_children_inner:
+      example:
+        data:
+          expression: expression
+          table_width: 0
+          icon:
+            emoji: 📝
+            type: emoji
+          caption:
+          - plain_text: plain_text
+            equation:
+              expression: expression
+            annotations:
+              code: true
+              color: default
+              underline: true
+              bold: true
+              strikethrough: true
+              italic: true
+            text:
+              link:
+                url: url
+              content: content
+            href: href
+            type: text
+            mention:
+              date:
+                start: start
+                end: end
+                time_zone: time_zone
+              page:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              type: user
+              user:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          - plain_text: plain_text
+            equation:
+              expression: expression
+            annotations:
+              code: true
+              color: default
+              underline: true
+              bold: true
+              strikethrough: true
+              italic: true
+            text:
+              link:
+                url: url
+              content: content
+            href: href
+            type: text
+            mention:
+              date:
+                start: start
+                end: end
+                time_zone: time_zone
+              page:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              type: user
+              user:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          language: language
+          has_row_header: true
+          title: title
+          url: url
+          page_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          external:
+            url: url
+          cells:
+          - - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          - - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          file:
+            expiry_time: 2000-01-23T04:56:07.000+00:00
+            url: url
+          background_color: default
+          rich_text:
+          - plain_text: plain_text
+            equation:
+              expression: expression
+            annotations:
+              code: true
+              color: default
+              underline: true
+              bold: true
+              strikethrough: true
+              italic: true
+            text:
+              link:
+                url: url
+              content: content
+            href: href
+            type: text
+            mention:
+              date:
+                start: start
+                end: end
+                time_zone: time_zone
+              page:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              type: user
+              user:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          - plain_text: plain_text
+            equation:
+              expression: expression
+            annotations:
+              code: true
+              color: default
+              underline: true
+              bold: true
+              strikethrough: true
+              italic: true
+            text:
+              link:
+                url: url
+              content: content
+            href: href
+            type: text
+            mention:
+              date:
+                start: start
+                end: end
+                time_zone: time_zone
+              page:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              type: user
+              user:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          checked: true
+          text_color: default
+          has_column_header: true
+          synced_from:
+            block_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        type: paragraph
+      properties:
+        type:
+          enum:
+          - paragraph
+          - heading_1
+          - heading_2
+          - heading_3
+          - bulleted_list_item
+          - numbered_list_item
+          - to_do
+          - quote
+          - toggle
+          - code
+          - image
+          - file
+          - bookmark
+          - embed
+          - callout
+          - equation
+          - link_to_page
+          - template
+          - synced_block
+          - divider
+          - column_list
+          - column
+          - table
+          - table_row
+          - child_page
+          - child_database
+          type: string
+        data:
+          $ref: "#/components/schemas/BlockData"
+      required:
+      - data
+      - type
+    SearchResult_data_inner:
+      example:
+        title: 域渗透基础
+        type: space
+        uuid: c83e8574-7600-4ac0-beb3-2ab98a906012
+        content: |-
+          ## **域控制器(Domain Controller，简写DC)**
+
+          域控制器是域中的一台类似管理服务器的计算机...
+      properties:
+        uuid:
+          description: 页面或块的唯一标识符
+          example: c83e8574-7600-4ac0-beb3-2ab98a906012
+          format: uuid
+          type: string
+        title:
+          description: 页面或块的标题
+          example: 域渗透基础
+          type: string
+        content:
+          description: 页面或块的内容片段
+          example: |-
+            ## **域控制器(Domain Controller，简写DC)**
+
+            域控制器是域中的一台类似管理服务器的计算机...
+          type: string
+        type:
+          description: 结果类型
+          example: space
+          type: string
+  securitySchemes:
+    bearerAuth:
+      description: 机器人 Token 认证
+      scheme: bearer
+      type: http
+
