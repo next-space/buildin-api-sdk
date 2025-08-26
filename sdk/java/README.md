@@ -2,7 +2,6 @@
 
 Buildin API
 - API version: 1.0.0
-  - Build date: 2025-08-24T23:00:02.730401+08:00[Asia/Shanghai]
   - Generator version: 7.14.0
 
 Buildin Developer API

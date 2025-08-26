@@ -256,6 +256,3 @@ src/main/java/org/openapitools/client/model/UpdateDatabaseRequest.java
 src/main/java/org/openapitools/client/model/UpdateDatabaseRequestPropertiesValue.java
 src/main/java/org/openapitools/client/model/UpdatePageRequest.java
 src/main/java/org/openapitools/client/model/User.java
-src/test/java/org/openapitools/client/model/SearchRequestTest.java
-src/test/java/org/openapitools/client/model/SearchResultDataInnerTest.java
-src/test/java/org/openapitools/client/model/SearchResultTest.java
