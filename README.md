@@ -316,5 +316,5 @@ openapi-generator-cli generate -i openapi.json -g php -o sdk/php
 ## 📞 联系
 
 - Buildin 官方网站：https://buildin.ai
-- API 文档：https://buildin.ai/share/df7cd54f-1c21-4fc1-9fd8-ce81be1918a5
+- API 文档：https://buildin.ai/share/480fea3b-bf25-478c-8c33-111c002defdc
 - 技术支持：请通过 Buildin 官方渠道联系

@@ -85,7 +85,7 @@ typescript-demo/
 
 ## 更多资源
 
-- [Buildin API 文档](https://buildin.ai/share/df7cd54f-1c21-4fc1-9fd8-ce81be1918a5)
+- [Buildin API 文档](https://buildin.ai/share/480fea3b-bf25-478c-8c33-111c002defdc)
 - [Buildin 官网](https://buildin.ai/product)
 
 ## 许可证

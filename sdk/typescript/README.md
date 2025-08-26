@@ -112,7 +112,7 @@ Check out the [examples directory](../../typescript-demo) for complete usage exa
 
 ## API Reference
 
-For detailed API documentation, visit: [Buildin API Documentation](https://buildin.ai/share/df7cd54f-1c21-4fc1-9fd8-ce81be1918a5)
+For detailed API documentation, visit: [Buildin API Documentation](https://buildin.ai/share/480fea3b-bf25-478c-8c33-111c002defdc)
 
 ## Contributing
 
@@ -125,5 +125,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Support
 
 - 📧 Email: support@buildin.ai
-- 📚 Documentation: https://buildin.ai/share/df7cd54f-1c21-4fc1-9fd8-ce81be1918a5
+- 📚 Documentation: https://buildin.ai/share/480fea3b-bf25-478c-8c33-111c002defdc
 - 🐛 Issues: https://github.com/next-space/buildin-api-sdk/issues
