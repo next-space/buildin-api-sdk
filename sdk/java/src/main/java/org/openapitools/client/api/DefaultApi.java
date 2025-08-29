@@ -46,6 +46,9 @@ import java.util.UUID;
 import org.openapitools.client.model.UpdateBlockRequest;
 import org.openapitools.client.model.UpdateDatabaseRequest;
 import org.openapitools.client.model.UpdatePageRequest;
+import org.openapitools.client.model.UserMe;
+import org.openapitools.client.model.V1SearchRequest;
+import org.openapitools.client.model.V1SearchResponse;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -1038,6 +1041,131 @@ public class DefaultApi {
         return localVarCall;
     }
     /**
+     * Build call for getMe
+     * @param _callback Callback for upload/download progress
+     * @return Call to execute
+     * @throws ApiException If fail to serialize the request body object
+     * @http.response.details
+     <table border="1">
+       <caption>Response Details</caption>
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> 成功获取用户信息 </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> 未授权 </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> 机器人创建者信息不存在 </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call getMeCall(final ApiCallback _callback) throws ApiException {
+        String basePath = null;
+        // Operation Servers
+        String[] localBasePaths = new String[] {  };
+
+        // Determine Base Path to Use
+        if (localCustomBaseUrl != null){
+            basePath = localCustomBaseUrl;
+        } else if ( localBasePaths.length > 0 ) {
+            basePath = localBasePaths[localHostIndex];
+        } else {
+            basePath = null;
+        }
+
+        Object localVarPostBody = null;
+
+        // create path and map variables
+        String localVarPath = "/v1/users/me";
+
+        List<Pair> localVarQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarCookieParams = new HashMap<String, String>();
+        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+        final String[] localVarAccepts = {
+            "application/json"
+        };
+        final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) {
+            localVarHeaderParams.put("Accept", localVarAccept);
+        }
+
+        final String[] localVarContentTypes = {
+        };
+        final String localVarContentType = localVarApiClient.selectHeaderContentType(localVarContentTypes);
+        if (localVarContentType != null) {
+            localVarHeaderParams.put("Content-Type", localVarContentType);
+        }
+
+        String[] localVarAuthNames = new String[] { "bearerAuth" };
+        return localVarApiClient.buildCall(basePath, localVarPath, "GET", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private okhttp3.Call getMeValidateBeforeCall(final ApiCallback _callback) throws ApiException {
+        return getMeCall(_callback);
+
+    }
+
+    /**
+     * 获取机器人创建者信息
+     * 获取当前机器人的创建者用户信息
+     * @return UserMe
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table border="1">
+       <caption>Response Details</caption>
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> 成功获取用户信息 </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> 未授权 </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> 机器人创建者信息不存在 </td><td>  -  </td></tr>
+     </table>
+     */
+    public UserMe getMe() throws ApiException {
+        ApiResponse<UserMe> localVarResp = getMeWithHttpInfo();
+        return localVarResp.getData();
+    }
+
+    /**
+     * 获取机器人创建者信息
+     * 获取当前机器人的创建者用户信息
+     * @return ApiResponse&lt;UserMe&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table border="1">
+       <caption>Response Details</caption>
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> 成功获取用户信息 </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> 未授权 </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> 机器人创建者信息不存在 </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<UserMe> getMeWithHttpInfo() throws ApiException {
+        okhttp3.Call localVarCall = getMeValidateBeforeCall(null);
+        Type localVarReturnType = new TypeToken<UserMe>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * 获取机器人创建者信息 (asynchronously)
+     * 获取当前机器人的创建者用户信息
+     * @param _callback The callback to be executed when the API call finishes
+     * @return The request call
+     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
+     * @http.response.details
+     <table border="1">
+       <caption>Response Details</caption>
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> 成功获取用户信息 </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> 未授权 </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> 机器人创建者信息不存在 </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call getMeAsync(final ApiCallback<UserMe> _callback) throws ApiException {
+
+        okhttp3.Call localVarCall = getMeValidateBeforeCall(_callback);
+        Type localVarReturnType = new TypeToken<UserMe>(){}.getType();
+        localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
+        return localVarCall;
+    }
+    /**
      * Build call for getPage
      * @param pageId 页面ID (required)
      * @param _callback Callback for upload/download progress
@@ -1851,6 +1979,153 @@ public class DefaultApi {
 
         okhttp3.Call localVarCall = updatePageValidateBeforeCall(pageId, updatePageRequest, _callback);
         Type localVarReturnType = new TypeToken<Page>(){}.getType();
+        localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
+        return localVarCall;
+    }
+    /**
+     * Build call for v1Search
+     * @param v1SearchRequest  (required)
+     * @param _callback Callback for upload/download progress
+     * @return Call to execute
+     * @throws ApiException If fail to serialize the request body object
+     * @http.response.details
+     <table border="1">
+       <caption>Response Details</caption>
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> 搜索成功 </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> 请求参数错误 </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> 未授权 </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> 权限不足 </td><td>  -  </td></tr>
+        <tr><td> 429 </td><td> 请求频率超过限制 </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> 内部服务器错误 </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call v1SearchCall(@javax.annotation.Nonnull V1SearchRequest v1SearchRequest, final ApiCallback _callback) throws ApiException {
+        String basePath = null;
+        // Operation Servers
+        String[] localBasePaths = new String[] {  };
+
+        // Determine Base Path to Use
+        if (localCustomBaseUrl != null){
+            basePath = localCustomBaseUrl;
+        } else if ( localBasePaths.length > 0 ) {
+            basePath = localBasePaths[localHostIndex];
+        } else {
+            basePath = null;
+        }
+
+        Object localVarPostBody = v1SearchRequest;
+
+        // create path and map variables
+        String localVarPath = "/v1/search";
+
+        List<Pair> localVarQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarCookieParams = new HashMap<String, String>();
+        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+        final String[] localVarAccepts = {
+            "application/json"
+        };
+        final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) {
+            localVarHeaderParams.put("Accept", localVarAccept);
+        }
+
+        final String[] localVarContentTypes = {
+            "application/json"
+        };
+        final String localVarContentType = localVarApiClient.selectHeaderContentType(localVarContentTypes);
+        if (localVarContentType != null) {
+            localVarHeaderParams.put("Content-Type", localVarContentType);
+        }
+
+        String[] localVarAuthNames = new String[] { "bearerAuth" };
+        return localVarApiClient.buildCall(basePath, localVarPath, "POST", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private okhttp3.Call v1SearchValidateBeforeCall(@javax.annotation.Nonnull V1SearchRequest v1SearchRequest, final ApiCallback _callback) throws ApiException {
+        // verify the required parameter 'v1SearchRequest' is set
+        if (v1SearchRequest == null) {
+            throw new ApiException("Missing the required parameter 'v1SearchRequest' when calling v1Search(Async)");
+        }
+
+        return v1SearchCall(v1SearchRequest, _callback);
+
+    }
+
+    /**
+     * 搜索页面
+     * 在机器人授权的页面范围内搜索相关内容
+     * @param v1SearchRequest  (required)
+     * @return V1SearchResponse
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table border="1">
+       <caption>Response Details</caption>
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> 搜索成功 </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> 请求参数错误 </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> 未授权 </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> 权限不足 </td><td>  -  </td></tr>
+        <tr><td> 429 </td><td> 请求频率超过限制 </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> 内部服务器错误 </td><td>  -  </td></tr>
+     </table>
+     */
+    public V1SearchResponse v1Search(@javax.annotation.Nonnull V1SearchRequest v1SearchRequest) throws ApiException {
+        ApiResponse<V1SearchResponse> localVarResp = v1SearchWithHttpInfo(v1SearchRequest);
+        return localVarResp.getData();
+    }
+
+    /**
+     * 搜索页面
+     * 在机器人授权的页面范围内搜索相关内容
+     * @param v1SearchRequest  (required)
+     * @return ApiResponse&lt;V1SearchResponse&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table border="1">
+       <caption>Response Details</caption>
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> 搜索成功 </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> 请求参数错误 </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> 未授权 </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> 权限不足 </td><td>  -  </td></tr>
+        <tr><td> 429 </td><td> 请求频率超过限制 </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> 内部服务器错误 </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<V1SearchResponse> v1SearchWithHttpInfo(@javax.annotation.Nonnull V1SearchRequest v1SearchRequest) throws ApiException {
+        okhttp3.Call localVarCall = v1SearchValidateBeforeCall(v1SearchRequest, null);
+        Type localVarReturnType = new TypeToken<V1SearchResponse>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * 搜索页面 (asynchronously)
+     * 在机器人授权的页面范围内搜索相关内容
+     * @param v1SearchRequest  (required)
+     * @param _callback The callback to be executed when the API call finishes
+     * @return The request call
+     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
+     * @http.response.details
+     <table border="1">
+       <caption>Response Details</caption>
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> 搜索成功 </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> 请求参数错误 </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> 未授权 </td><td>  -  </td></tr>
+        <tr><td> 403 </td><td> 权限不足 </td><td>  -  </td></tr>
+        <tr><td> 429 </td><td> 请求频率超过限制 </td><td>  -  </td></tr>
+        <tr><td> 500 </td><td> 内部服务器错误 </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call v1SearchAsync(@javax.annotation.Nonnull V1SearchRequest v1SearchRequest, final ApiCallback<V1SearchResponse> _callback) throws ApiException {
+
+        okhttp3.Call localVarCall = v1SearchValidateBeforeCall(v1SearchRequest, _callback);
+        Type localVarReturnType = new TypeToken<V1SearchResponse>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
     }

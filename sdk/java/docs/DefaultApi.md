@@ -11,12 +11,14 @@ All URIs are relative to *https://api.buildin.ai*
 | [**getBlock**](DefaultApi.md#getBlock) | **GET** /v1/blocks/{block_id} | 获取块 |
 | [**getBlockChildren**](DefaultApi.md#getBlockChildren) | **GET** /v1/blocks/{block_id}/children | 获取子块 |
 | [**getDatabase**](DefaultApi.md#getDatabase) | **GET** /v1/databases/{database_id} | 获取数据库 |
+| [**getMe**](DefaultApi.md#getMe) | **GET** /v1/users/me | 获取机器人创建者信息 |
 | [**getPage**](DefaultApi.md#getPage) | **GET** /v1/pages/{page_id} | 获取页面 |
 | [**queryDatabase**](DefaultApi.md#queryDatabase) | **POST** /v1/databases/{database_id}/query | 查询数据库 |
 | [**searchPages**](DefaultApi.md#searchPages) | **POST** /v1/pages/search | 搜索页面 |
 | [**updateBlock**](DefaultApi.md#updateBlock) | **PATCH** /v1/blocks/{block_id} | 更新块 |
 | [**updateDatabase**](DefaultApi.md#updateDatabase) | **PATCH** /v1/databases/{database_id} | 更新数据库 |
 | [**updatePage**](DefaultApi.md#updatePage) | **PATCH** /v1/pages/{page_id} | 更新页面属性 |
+| [**v1Search**](DefaultApi.md#v1Search) | **POST** /v1/search | 搜索页面 |
 
 
 <a id="appendBlockChildren"></a>
@@ -502,6 +504,71 @@ public class Example {
 | **200** | 成功获取数据库 |  -  |
 | **404** | 数据库不存在 |  -  |
 
+<a id="getMe"></a>
+# **getMe**
+> UserMe getMe()
+
+获取机器人创建者信息
+
+获取当前机器人的创建者用户信息
+
+### Example
+```java
+// Import classes:
+import org.openapitools.client.ApiClient;
+import org.openapitools.client.ApiException;
+import org.openapitools.client.Configuration;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.models.*;
+import org.openapitools.client.api.DefaultApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("https://api.buildin.ai");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    DefaultApi apiInstance = new DefaultApi(defaultClient);
+    try {
+      UserMe result = apiInstance.getMe();
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling DefaultApi#getMe");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+This endpoint does not need any parameter.
+
+### Return type
+
+[**UserMe**](UserMe.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | 成功获取用户信息 |  -  |
+| **401** | 未授权 |  -  |
+| **404** | 机器人创建者信息不存在 |  -  |
+
 <a id="getPage"></a>
 # **getPage**
 > Page getPage(pageId)
@@ -916,4 +983,76 @@ public class Example {
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 | **200** | 页面更新成功 |  -  |
+
+<a id="v1Search"></a>
+# **v1Search**
+> V1SearchResponse v1Search(v1SearchRequest)
+
+搜索页面
+
+在机器人授权的页面范围内搜索相关内容
+
+### Example
+```java
+// Import classes:
+import org.openapitools.client.ApiClient;
+import org.openapitools.client.ApiException;
+import org.openapitools.client.Configuration;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.models.*;
+import org.openapitools.client.api.DefaultApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("https://api.buildin.ai");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    DefaultApi apiInstance = new DefaultApi(defaultClient);
+    V1SearchRequest v1SearchRequest = new V1SearchRequest(); // V1SearchRequest | 
+    try {
+      V1SearchResponse result = apiInstance.v1Search(v1SearchRequest);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling DefaultApi#v1Search");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **v1SearchRequest** | [**V1SearchRequest**](V1SearchRequest.md)|  | |
+
+### Return type
+
+[**V1SearchResponse**](V1SearchResponse.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | 搜索成功 |  -  |
+| **400** | 请求参数错误 |  -  |
+| **401** | 未授权 |  -  |
+| **403** | 权限不足 |  -  |
+| **429** | 请求频率超过限制 |  -  |
+| **500** | 内部服务器错误 |  -  |
 

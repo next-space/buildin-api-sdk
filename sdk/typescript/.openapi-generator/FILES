@@ -55,6 +55,7 @@ models/Parent.ts
 models/ParentBlockId.ts
 models/ParentDatabaseId.ts
 models/ParentPageId.ts
+models/ParentSpaceId.ts
 models/PropertySchema.ts
 models/PropertySchemaCheckbox.ts
 models/PropertySchemaDate.ts
@@ -112,5 +113,13 @@ models/UpdateDatabaseRequest.ts
 models/UpdateDatabaseRequestPropertiesValue.ts
 models/UpdatePageRequest.ts
 models/User.ts
+models/UserMe.ts
+models/UserMePerson.ts
+models/V1SearchPageResult.ts
+models/V1SearchPageResultParent.ts
+models/V1SearchPageResultProperties.ts
+models/V1SearchPageResultPropertiesTitle.ts
+models/V1SearchRequest.ts
+models/V1SearchResponse.ts
 models/index.ts
 runtime.ts

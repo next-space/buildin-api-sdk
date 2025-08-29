@@ -25,6 +25,7 @@ import java.util.UUID;
 import org.openapitools.client.model.ParentBlockId;
 import org.openapitools.client.model.ParentDatabaseId;
 import org.openapitools.client.model.ParentPageId;
+import org.openapitools.client.model.ParentSpaceId;
 
 
 
@@ -76,6 +77,7 @@ public class Parent extends AbstractOpenApiSchema {
             final TypeAdapter<ParentDatabaseId> adapterParentDatabaseId = gson.getDelegateAdapter(this, TypeToken.get(ParentDatabaseId.class));
             final TypeAdapter<ParentPageId> adapterParentPageId = gson.getDelegateAdapter(this, TypeToken.get(ParentPageId.class));
             final TypeAdapter<ParentBlockId> adapterParentBlockId = gson.getDelegateAdapter(this, TypeToken.get(ParentBlockId.class));
+            final TypeAdapter<ParentSpaceId> adapterParentSpaceId = gson.getDelegateAdapter(this, TypeToken.get(ParentSpaceId.class));
 
             return (TypeAdapter<T>) new TypeAdapter<Parent>() {
                 @Override
@@ -103,7 +105,13 @@ public class Parent extends AbstractOpenApiSchema {
                         elementAdapter.write(out, element);
                         return;
                     }
-                    throw new IOException("Failed to serialize as the type doesn't match oneOf schemas: ParentBlockId, ParentDatabaseId, ParentPageId");
+                    // check if the actual instance is of the type `ParentSpaceId`
+                    if (value.getActualInstance() instanceof ParentSpaceId) {
+                        JsonElement element = adapterParentSpaceId.toJsonTree((ParentSpaceId)value.getActualInstance());
+                        elementAdapter.write(out, element);
+                        return;
+                    }
+                    throw new IOException("Failed to serialize as the type doesn't match oneOf schemas: ParentBlockId, ParentDatabaseId, ParentPageId, ParentSpaceId");
                 }
 
                 @Override
@@ -151,6 +159,18 @@ public class Parent extends AbstractOpenApiSchema {
                         errorMessages.add(String.format("Deserialization for ParentBlockId failed with `%s`.", e.getMessage()));
                         log.log(Level.FINER, "Input data does not match schema 'ParentBlockId'", e);
                     }
+                    // deserialize ParentSpaceId
+                    try {
+                        // validate the JSON object to see if any exception is thrown
+                        ParentSpaceId.validateJsonElement(jsonElement);
+                        actualAdapter = adapterParentSpaceId;
+                        match++;
+                        log.log(Level.FINER, "Input data matches schema 'ParentSpaceId'");
+                    } catch (Exception e) {
+                        // deserialization failed, continue
+                        errorMessages.add(String.format("Deserialization for ParentSpaceId failed with `%s`.", e.getMessage()));
+                        log.log(Level.FINER, "Input data does not match schema 'ParentSpaceId'", e);
+                    }
 
                     if (match == 1) {
                         Parent ret = new Parent();
@@ -180,6 +200,7 @@ public class Parent extends AbstractOpenApiSchema {
         schemas.put("ParentDatabaseId", ParentDatabaseId.class);
         schemas.put("ParentPageId", ParentPageId.class);
         schemas.put("ParentBlockId", ParentBlockId.class);
+        schemas.put("ParentSpaceId", ParentSpaceId.class);
     }
 
     @Override
@@ -190,7 +211,7 @@ public class Parent extends AbstractOpenApiSchema {
     /**
      * Set the instance that matches the oneOf child schema, check
      * the instance parameter is valid against the oneOf child schemas:
-     * ParentBlockId, ParentDatabaseId, ParentPageId
+     * ParentBlockId, ParentDatabaseId, ParentPageId, ParentSpaceId
      *
      * It could be an instance of the 'oneOf' schemas.
      */
@@ -211,14 +232,19 @@ public class Parent extends AbstractOpenApiSchema {
             return;
         }
 
-        throw new RuntimeException("Invalid instance type. Must be ParentBlockId, ParentDatabaseId, ParentPageId");
+        if (instance instanceof ParentSpaceId) {
+            super.setActualInstance(instance);
+            return;
+        }
+
+        throw new RuntimeException("Invalid instance type. Must be ParentBlockId, ParentDatabaseId, ParentPageId, ParentSpaceId");
     }
 
     /**
      * Get the actual instance, which can be the following:
-     * ParentBlockId, ParentDatabaseId, ParentPageId
+     * ParentBlockId, ParentDatabaseId, ParentPageId, ParentSpaceId
      *
-     * @return The actual instance (ParentBlockId, ParentDatabaseId, ParentPageId)
+     * @return The actual instance (ParentBlockId, ParentDatabaseId, ParentPageId, ParentSpaceId)
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -260,6 +286,17 @@ public class Parent extends AbstractOpenApiSchema {
     }
 
     /**
+     * Get the actual instance of `ParentSpaceId`. If the actual instance is not `ParentSpaceId`,
+     * the ClassCastException will be thrown.
+     *
+     * @return The actual instance of `ParentSpaceId`
+     * @throws ClassCastException if the instance is not `ParentSpaceId`
+     */
+    public ParentSpaceId getParentSpaceId() throws ClassCastException {
+        return (ParentSpaceId)super.getActualInstance();
+    }
+
+    /**
      * Validates the JSON Element and throws an exception if issues found
      *
      * @param jsonElement JSON Element
@@ -293,8 +330,16 @@ public class Parent extends AbstractOpenApiSchema {
             errorMessages.add(String.format("Deserialization for ParentBlockId failed with `%s`.", e.getMessage()));
             // continue to the next one
         }
+        // validate the json string with ParentSpaceId
+        try {
+            ParentSpaceId.validateJsonElement(jsonElement);
+            validCount++;
+        } catch (Exception e) {
+            errorMessages.add(String.format("Deserialization for ParentSpaceId failed with `%s`.", e.getMessage()));
+            // continue to the next one
+        }
         if (validCount != 1) {
-            throw new IOException(String.format("The JSON string is invalid for Parent with oneOf schemas: ParentBlockId, ParentDatabaseId, ParentPageId. %d class(es) match the result, expected 1. Detailed failure message for oneOf schemas: %s. JSON: %s", validCount, errorMessages, jsonElement.toString()));
+            throw new IOException(String.format("The JSON string is invalid for Parent with oneOf schemas: ParentBlockId, ParentDatabaseId, ParentPageId, ParentSpaceId. %d class(es) match the result, expected 1. Detailed failure message for oneOf schemas: %s. JSON: %s", validCount, errorMessages, jsonElement.toString()));
         }
     }
 

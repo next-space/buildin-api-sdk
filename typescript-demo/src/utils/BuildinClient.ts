@@ -211,6 +211,38 @@ class BuildinClient {
       throw this.handleApiError(error, '搜索页面');
     }
   }
+
+  /**
+   * 获取当前机器人创建者用户信息
+   * @returns 用户信息
+   */
+  async getMe(): Promise<any> {
+    try {
+      return await this.api.getMe();
+    } catch (error) {
+      throw this.handleApiError(error, '获取用户信息');
+    }
+  }
+
+  /**
+   * V1 搜索接口 - 在机器人授权的页面范围内搜索相关内容
+   * @param query 搜索关键词
+   * @param options 搜索选项
+   * @returns 搜索结果
+   */
+  async v1Search(query: string = '', options: { startCursor?: string, pageSize?: number } = {}): Promise<any> {
+    try {
+      return await this.api.v1Search({
+        v1SearchRequest: {
+          query,
+          start_cursor: options.startCursor,
+          page_size: options.pageSize
+        }
+      });
+    } catch (error) {
+      throw this.handleApiError(error, 'V1搜索');
+    }
+  }
   
   /**
    * 获取块的子块

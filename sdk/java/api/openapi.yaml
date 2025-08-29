@@ -20,6 +20,10 @@ tags:
   name: 页面
 - description: 块相关操作
   name: 块
+- description: 搜索相关操作
+  name: 搜索
+- description: 用户相关操作
+  name: 用户
 paths:
   /v1/databases:
     post:
@@ -506,6 +510,96 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
+  /v1/search:
+    post:
+      description: 在机器人授权的页面范围内搜索相关内容
+      operationId: v1Search
+      requestBody:
+        content:
+          application/json:
+            examples:
+              search_with_query:
+                summary: 带关键词搜索
+                value:
+                  query: 项目计划
+                  page_size: 20
+              paginated_search:
+                summary: 分页搜索
+                value:
+                  query: 会议
+                  start_cursor: eyJvZmZzZXQiOjEwfQ==
+                  page_size: 10
+              list_all_pages:
+                summary: 列出所有授权页面
+                value:
+                  query: ""
+                  page_size: 50
+            schema:
+              $ref: "#/components/schemas/V1SearchRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                object: list
+                results:
+                - object: page
+                  id: a1b2c3d4-5678-9012-3456-789012345678
+                  created_time: 2024-01-01T10:00:00.000Z
+                  last_edited_time: 2024-01-15T14:30:00.000Z
+                  parent:
+                    type: database_id
+                    database_id: d9824bdc-8445-4327-be8b-5b47500af6ce
+                  archived: false
+                  properties:
+                    title:
+                      type: title
+                      title:
+                      - type: text
+                        text:
+                          content: 项目计划文档
+                next_cursor: eyJvZmZzZXQiOjIwfQ==
+                has_more: true
+              schema:
+                $ref: "#/components/schemas/V1SearchResponse"
+          description: 搜索成功
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: 请求参数错误
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: 未授权
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: 权限不足
+        "429":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: 请求频率超过限制
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: 内部服务器错误
+      summary: 搜索页面
+      tags:
+      - 搜索
+      x-content-type: application/json
+      x-accepts:
+      - application/json
   /v1/pages/search:
     post:
       description: 通过向量搜索在空间中查找相关页面和内容
@@ -564,6 +658,42 @@ paths:
       tags:
       - 页面
       x-content-type: application/json
+      x-accepts:
+      - application/json
+  /v1/users/me:
+    get:
+      description: 获取当前机器人的创建者用户信息
+      operationId: getMe
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                object: user
+                id: 875bb809-eab6-467f-80d9-a7de6899d885
+                type: person
+                person:
+                  email: user@example.com
+                name: 张三
+                avatar_url: https://cdn2.buildin.ai/avatar123.jpg
+              schema:
+                $ref: "#/components/schemas/UserMe"
+          description: 成功获取用户信息
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: 未授权
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: 机器人创建者信息不存在
+      summary: 获取机器人创建者信息
+      tags:
+      - 用户
       x-accepts:
       - application/json
 components:
@@ -1493,6 +1623,39 @@ components:
         id:
           format: uuid
           type: string
+    UserMe:
+      example:
+        avatar_url: https://openapi-generator.tech
+        person:
+          email: email
+        name: name
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        type: person
+        object: user
+      properties:
+        object:
+          enum:
+          - user
+          type: string
+        id:
+          description: 用户唯一标识符
+          format: uuid
+          type: string
+        type:
+          enum:
+          - person
+          type: string
+        person:
+          $ref: "#/components/schemas/UserMe_person"
+        name:
+          description: 用户显示名称
+          type: string
+          nullable: true
+        avatar_url:
+          description: 用户头像URL
+          format: uri
+          type: string
+          nullable: true
     IconEmoji:
       example:
         emoji: 📝
@@ -1597,11 +1760,27 @@ components:
       required:
       - block_id
       - type
+    ParentSpaceId:
+      example:
+        type: space_id
+        space_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        type:
+          enum:
+          - space_id
+          type: string
+        space_id:
+          format: uuid
+          type: string
+      required:
+      - space_id
+      - type
     Parent:
       oneOf:
       - $ref: "#/components/schemas/ParentDatabaseId"
       - $ref: "#/components/schemas/ParentPageId"
       - $ref: "#/components/schemas/ParentBlockId"
+      - $ref: "#/components/schemas/ParentSpaceId"
     PropertySchema:
       anyOf:
       - $ref: "#/components/schemas/PropertySchemaTitle"
@@ -5310,6 +5489,268 @@ components:
             object: user
           object: block
         object: list
+    V1SearchRequest:
+      example:
+        query: 项目计划
+        start_cursor: eyJvZmZzZXQiOjEwfQ==
+        page_size: 8
+      properties:
+        query:
+          default: ""
+          description: 搜索关键词
+          example: 项目计划
+          type: string
+        start_cursor:
+          description: 分页游标，用于获取下一页结果
+          example: eyJvZmZzZXQiOjEwfQ==
+          type: string
+        page_size:
+          default: 10
+          description: 每页返回的结果数量
+          maximum: 100
+          minimum: 1
+          type: integer
+    V1SearchPageResult:
+      example:
+        created_time: 2000-01-23T04:56:07.000+00:00
+        parent:
+          type: space_id
+          space_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        archived: true
+        last_edited_time: 2000-01-23T04:56:07.000+00:00
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        properties:
+          title:
+            type: title
+            title:
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - plain_text: plain_text
+              equation:
+                expression: expression
+              annotations:
+                code: true
+                color: default
+                underline: true
+                bold: true
+                strikethrough: true
+                italic: true
+              text:
+                link:
+                  url: url
+                content: content
+              href: href
+              type: text
+              mention:
+                date:
+                  start: start
+                  end: end
+                  time_zone: time_zone
+                page:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                type: user
+                user:
+                  id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        object: page
+      properties:
+        object:
+          enum:
+          - page
+          type: string
+        id:
+          description: 页面的唯一标识符
+          format: uuid
+          type: string
+        created_time:
+          description: 页面创建时间
+          format: date-time
+          type: string
+        last_edited_time:
+          description: 页面最后编辑时间
+          format: date-time
+          type: string
+        parent:
+          $ref: "#/components/schemas/V1SearchPageResult_parent"
+        archived:
+          description: 页面是否已归档
+          type: boolean
+        properties:
+          $ref: "#/components/schemas/V1SearchPageResult_properties"
+    V1SearchResponse:
+      example:
+        next_cursor: next_cursor
+        has_more: true
+        results:
+        - created_time: 2000-01-23T04:56:07.000+00:00
+          parent:
+            type: space_id
+            space_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          archived: true
+          last_edited_time: 2000-01-23T04:56:07.000+00:00
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          properties:
+            title:
+              type: title
+              title:
+              - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          object: page
+        - created_time: 2000-01-23T04:56:07.000+00:00
+          parent:
+            type: space_id
+            space_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          archived: true
+          last_edited_time: 2000-01-23T04:56:07.000+00:00
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          properties:
+            title:
+              type: title
+              title:
+              - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              - plain_text: plain_text
+                equation:
+                  expression: expression
+                annotations:
+                  code: true
+                  color: default
+                  underline: true
+                  bold: true
+                  strikethrough: true
+                  italic: true
+                text:
+                  link:
+                    url: url
+                  content: content
+                href: href
+                type: text
+                mention:
+                  date:
+                    start: start
+                    end: end
+                    time_zone: time_zone
+                  page:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  type: user
+                  user:
+                    id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          object: page
+        object: list
+      properties:
+        object:
+          enum:
+          - list
+          type: string
+        results:
+          description: 搜索结果页面数组
+          items:
+            $ref: "#/components/schemas/V1SearchPageResult"
+          type: array
+        next_cursor:
+          description: 下一页游标，为 null 表示没有更多结果
+          type: string
+          nullable: true
+        has_more:
+          description: 是否还有更多结果
+          type: boolean
     SearchRequest:
       example:
         query: 网络渗透
@@ -5473,6 +5914,15 @@ components:
           - pink
           - red
           type: string
+    UserMe_person:
+      example:
+        email: email
+      properties:
+        email:
+          description: 用户邮箱地址
+          format: email
+          type: string
+          nullable: true
     Cover_external:
       example:
         url: url
@@ -5960,6 +6410,140 @@ components:
       required:
       - data
       - type
+    V1SearchPageResult_parent:
+      description: 页面的父级对象
+      oneOf:
+      - $ref: "#/components/schemas/ParentSpaceId"
+      - $ref: "#/components/schemas/ParentDatabaseId"
+      - $ref: "#/components/schemas/ParentPageId"
+      - $ref: "#/components/schemas/ParentBlockId"
+      nullable: true
+    V1SearchPageResult_properties_title:
+      example:
+        type: title
+        title:
+        - plain_text: plain_text
+          equation:
+            expression: expression
+          annotations:
+            code: true
+            color: default
+            underline: true
+            bold: true
+            strikethrough: true
+            italic: true
+          text:
+            link:
+              url: url
+            content: content
+          href: href
+          type: text
+          mention:
+            date:
+              start: start
+              end: end
+              time_zone: time_zone
+            page:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            type: user
+            user:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        - plain_text: plain_text
+          equation:
+            expression: expression
+          annotations:
+            code: true
+            color: default
+            underline: true
+            bold: true
+            strikethrough: true
+            italic: true
+          text:
+            link:
+              url: url
+            content: content
+          href: href
+          type: text
+          mention:
+            date:
+              start: start
+              end: end
+              time_zone: time_zone
+            page:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            type: user
+            user:
+              id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        type:
+          enum:
+          - title
+          type: string
+        title:
+          items:
+            $ref: "#/components/schemas/RichTextItem"
+          type: array
+    V1SearchPageResult_properties:
+      description: 页面属性
+      example:
+        title:
+          type: title
+          title:
+          - plain_text: plain_text
+            equation:
+              expression: expression
+            annotations:
+              code: true
+              color: default
+              underline: true
+              bold: true
+              strikethrough: true
+              italic: true
+            text:
+              link:
+                url: url
+              content: content
+            href: href
+            type: text
+            mention:
+              date:
+                start: start
+                end: end
+                time_zone: time_zone
+              page:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              type: user
+              user:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          - plain_text: plain_text
+            equation:
+              expression: expression
+            annotations:
+              code: true
+              color: default
+              underline: true
+              bold: true
+              strikethrough: true
+              italic: true
+            text:
+              link:
+                url: url
+              content: content
+            href: href
+            type: text
+            mention:
+              date:
+                start: start
+                end: end
+                time_zone: time_zone
+              page:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              type: user
+              user:
+                id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        title:
+          $ref: "#/components/schemas/V1SearchPageResult_properties_title"
     SearchResult_data_inner:
       example:
         title: 域渗透基础

@@ -33,13 +33,20 @@ import {
     ParentPageIdFromJSONTyped,
     ParentPageIdToJSON,
 } from './ParentPageId';
+import type { ParentSpaceId } from './ParentSpaceId';
+import {
+    instanceOfParentSpaceId,
+    ParentSpaceIdFromJSON,
+    ParentSpaceIdFromJSONTyped,
+    ParentSpaceIdToJSON,
+} from './ParentSpaceId';
 
 /**
  * @type Parent
  * 
  * @export
  */
-export type Parent = ParentBlockId | ParentDatabaseId | ParentPageId;
+export type Parent = ParentBlockId | ParentDatabaseId | ParentPageId | ParentSpaceId;
 
 export function ParentFromJSON(json: any): Parent {
     return ParentFromJSONTyped(json, false);
@@ -60,6 +67,9 @@ export function ParentFromJSONTyped(json: any, ignoreDiscriminator: boolean): Pa
     }
     if (instanceOfParentPageId(json)) {
         return ParentPageIdFromJSONTyped(json, true);
+    }
+    if (instanceOfParentSpaceId(json)) {
+        return ParentSpaceIdFromJSONTyped(json, true);
     }
 
     return {} as any;
@@ -84,6 +94,9 @@ export function ParentToJSONTyped(value?: Parent | null, ignoreDiscriminator: bo
     }
     if (instanceOfParentPageId(value)) {
         return ParentPageIdToJSON(value as ParentPageId);
+    }
+    if (instanceOfParentSpaceId(value)) {
+        return ParentSpaceIdToJSON(value as ParentSpaceId);
     }
 
     return {};

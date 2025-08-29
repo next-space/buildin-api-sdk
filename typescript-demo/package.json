@@ -13,11 +13,16 @@
     "dev:update-record": "ts-node src/UpdateDatabaseRecordDemo.ts",
     "dev:delete-block": "ts-node src/DeleteBlockDemo.ts",
     "dev:search-page": "ts-node src/PageSearchDemo.ts",
+    "dev:get-user-me": "ts-node src/GetUserMeDemo.ts",
+    "dev:v1-search": "ts-node src/V1SearchDemo.ts",
     "demo:create-database": "node dist/CreateDatabaseDemo.js",
     "demo:add-children": "node dist/BlockAddChildrenDemo.js",
     "demo:create-record": "node dist/CreateDatabaseRecordDemo.js",
     "demo:delete-block": "node dist/DeleteBlockDemo.js",
-    "demo:all": "npm run demo:create-database && npm run demo:add-children && npm run demo:create-record"
+    "demo:get-user-me": "node dist/GetUserMeDemo.js",
+    "demo:v1-search": "node dist/V1SearchDemo.js",
+    "demo:page-search": "node dist/PageSearchDemo.js",
+    "demo:all": "npm run demo:create-database && npm run demo:add-children && npm run demo:create-record && npm run demo:get-user-me && npm run demo:v1-search"
   },
   "keywords": [
     "buildin",
@@ -30,7 +35,7 @@
   "license": "MIT",
   "dependencies": {
     "uuid": "^9.0.0",
-    "buildin-api-sdk": "1.0.1"
+    "buildin-api-sdk": "1.0.3"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",

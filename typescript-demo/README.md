@@ -52,6 +52,15 @@ npm run demo:create-record
 # 删除块演示
 npm run demo:delete-block
 
+# 获取用户信息演示
+npm run demo:get-user-me
+
+# V1 搜索演示
+npm run demo:v1-search
+
+# 页面搜索演示
+npm run demo:page-search
+
 # 运行所有演示
 npm run demo:all
 ```
@@ -64,6 +73,9 @@ npm run demo:all
 2. **添加块子元素**：演示如何向页面添加各种类型的块元素
 3. **创建数据库记录**：演示如何在数据库中创建记录并设置各种类型的属性值
 4. **删除块**：演示如何删除指定的块
+5. **获取用户信息**：演示如何获取当前机器人创建者的用户信息
+6. **V1 搜索**：演示如何在机器人授权的页面范围内搜索相关内容，支持分页
+7. **页面搜索**：演示如何通过向量搜索在空间中查找相关页面和内容
 
 ## 项目结构
 
@@ -76,7 +88,10 @@ typescript-demo/
 │   ├── CreateDatabaseDemo.ts        # 创建数据库演示
 │   ├── BlockAddChildrenDemo.ts      # 添加块子元素演示
 │   ├── CreateDatabaseRecordDemo.ts  # 创建数据库记录演示
-│   └── DeleteBlockDemo.ts           # 删除块演示
+│   ├── DeleteBlockDemo.ts           # 删除块演示
+│   ├── GetUserMeDemo.ts             # 获取用户信息演示
+│   ├── V1SearchDemo.ts              # V1 搜索演示
+│   └── PageSearchDemo.ts            # 页面搜索演示
 ├── .env                # 环境变量配置文件（需自行创建）
 ├── .env.example        # 环境变量示例文件
 ├── package.json        # 项目依赖配置

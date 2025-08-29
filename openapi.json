@@ -428,6 +428,46 @@
           }
         }
       },
+      "UserMe": {
+        "type": "object",
+        "properties": {
+          "object": {
+            "type": "string",
+            "const": "user"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "用户唯一标识符"
+          },
+          "type": {
+            "type": "string",
+            "const": "person"
+          },
+          "person": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "format": "email",
+                "nullable": true,
+                "description": "用户邮箱地址"
+              }
+            }
+          },
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "description": "用户显示名称"
+          },
+          "avatar_url": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "description": "用户头像URL"
+          }
+        }
+      },
       "IconEmoji": {
         "type": "object",
         "required": ["type", "emoji"],
@@ -536,11 +576,20 @@
           "block_id": { "type": "string", "format": "uuid" }
         }
       },
+      "ParentSpaceId": {
+        "type": "object",
+        "required": ["type", "space_id"],
+        "properties": {
+          "type": { "type": "string", "const": "space_id" },
+          "space_id": { "type": "string", "format": "uuid" }
+        }
+      },
       "Parent": {
         "oneOf": [
           { "$ref": "#/components/schemas/ParentDatabaseId" },
           { "$ref": "#/components/schemas/ParentPageId" },
-          { "$ref": "#/components/schemas/ParentBlockId" }
+          { "$ref": "#/components/schemas/ParentBlockId" },
+          { "$ref": "#/components/schemas/ParentSpaceId" }
         ]
       },
       "PropertySchema": {
@@ -1045,6 +1094,113 @@
           { "$ref": "#/components/schemas/PaginatedList" },
           { "properties": { "results": { "type": "array", "items": { "$ref": "#/components/schemas/Block" } } } }
         ]
+      },
+      "V1SearchRequest": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "搜索关键词",
+            "example": "项目计划",
+            "default": ""
+          },
+          "start_cursor": {
+            "type": "string",
+            "description": "分页游标，用于获取下一页结果",
+            "example": "eyJvZmZzZXQiOjEwfQ=="
+          },
+          "page_size": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "description": "每页返回的结果数量"
+          }
+        }
+      },
+      "V1SearchPageResult": {
+        "type": "object",
+        "properties": {
+          "object": {
+            "type": "string",
+            "const": "page"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "页面的唯一标识符"
+          },
+          "created_time": {
+            "type": "string",
+            "format": "date-time",
+            "description": "页面创建时间"
+          },
+          "last_edited_time": {
+            "type": "string",
+            "format": "date-time",
+            "description": "页面最后编辑时间"
+          },
+          "parent": {
+            "oneOf": [
+              { "$ref": "#/components/schemas/ParentSpaceId" },
+              { "$ref": "#/components/schemas/ParentDatabaseId" },
+              { "$ref": "#/components/schemas/ParentPageId" },
+              { "$ref": "#/components/schemas/ParentBlockId" }
+            ],
+            "nullable": true,
+            "description": "页面的父级对象"
+          },
+          "archived": {
+            "type": "boolean",
+            "description": "页面是否已归档"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "title"
+                  },
+                  "title": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/RichTextItem"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "页面属性"
+          }
+        }
+      },
+      "V1SearchResponse": {
+        "type": "object",
+        "properties": {
+          "object": {
+            "type": "string",
+            "const": "list"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/V1SearchPageResult"
+            },
+            "description": "搜索结果页面数组"
+          },
+          "next_cursor": {
+            "type": "string",
+            "nullable": true,
+            "description": "下一页游标，为 null 表示没有更多结果"
+          },
+          "has_more": {
+            "type": "boolean",
+            "description": "是否还有更多结果"
+          }
+        }
       },
       "SearchRequest": {
         "type": "object",
@@ -1756,6 +1912,141 @@
         }
       }
     },
+    "/v1/search": {
+      "post": {
+        "summary": "搜索页面",
+        "description": "在机器人授权的页面范围内搜索相关内容",
+        "operationId": "v1Search",
+        "tags": ["搜索"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/V1SearchRequest"
+              },
+              "examples": {
+                "search_with_query": {
+                  "summary": "带关键词搜索",
+                  "value": {
+                    "query": "项目计划",
+                    "page_size": 20
+                  }
+                },
+                "paginated_search": {
+                  "summary": "分页搜索",
+                  "value": {
+                    "query": "会议",
+                    "start_cursor": "eyJvZmZzZXQiOjEwfQ==",
+                    "page_size": 10
+                  }
+                },
+                "list_all_pages": {
+                  "summary": "列出所有授权页面",
+                  "value": {
+                    "query": "",
+                    "page_size": 50
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "搜索成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V1SearchResponse"
+                },
+                "example": {
+                  "object": "list",
+                  "results": [
+                    {
+                      "object": "page",
+                      "id": "a1b2c3d4-5678-9012-3456-789012345678",
+                      "created_time": "2024-01-01T10:00:00.000Z",
+                      "last_edited_time": "2024-01-15T14:30:00.000Z",
+                      "parent": {
+                        "type": "database_id",
+                        "database_id": "d9824bdc-8445-4327-be8b-5b47500af6ce"
+                      },
+                      "archived": false,
+                      "properties": {
+                        "title": {
+                          "type": "title",
+                          "title": [
+                            {
+                              "type": "text",
+                              "text": {
+                                "content": "项目计划文档"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "next_cursor": "eyJvZmZzZXQiOjIwfQ==",
+                  "has_more": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求参数错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "权限不足",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "请求频率超过限制",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "内部服务器错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/pages/search": {
       "post": {
         "summary": "搜索页面",
@@ -1845,6 +2136,56 @@
           }
         }
       }
+    },
+    "/v1/users/me": {
+      "get": {
+        "summary": "获取机器人创建者信息",
+        "description": "获取当前机器人的创建者用户信息",
+        "operationId": "getMe",
+        "tags": ["用户"],
+        "responses": {
+          "200": {
+            "description": "成功获取用户信息",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserMe"
+                },
+                "example": {
+                  "object": "user",
+                  "id": "875bb809-eab6-467f-80d9-a7de6899d885",
+                  "type": "person",
+                  "person": {
+                    "email": "user@example.com"
+                  },
+                  "name": "张三",
+                  "avatar_url": "https://cdn2.buildin.ai/avatar123.jpg"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "机器人创建者信息不存在",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "tags": [
@@ -1859,6 +2200,14 @@
     {
       "name": "块",
       "description": "块相关操作"
+    },
+    {
+      "name": "搜索",
+      "description": "搜索相关操作"
+    },
+    {
+      "name": "用户",
+      "description": "用户相关操作"
     }
   ]
 }

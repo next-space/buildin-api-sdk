@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openapitools</groupId>
-  <artifactId>flowus-api-demo</artifactId>
-  <name>FlowUs API Demo</name>
+  <groupId>ai.buildin</groupId>
+  <artifactId>buildin-api-demo</artifactId>
+  <name>Buildin API Demo</name>
   <version>1.0.0</version>
-  <description>FlowUs API Java SDK 演示程序</description>
+  <description>Buildin API Java SDK 演示程序</description>
   <build>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.11.0</version>
         <configuration>
-          <source>8</source>
-          <target>8</target>
+          <source>11</source>
+          <target>11</target>
           <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
@@ -22,7 +22,7 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>3.1.0</version>
         <configuration>
-          <mainClass>org.openapitools.demo.SimpleBlockDemo</mainClass>
+          <mainClass>ai.buildin.demo.SimpleBlockDemo</mainClass>
         </configuration>
       </plugin>
       <plugin>
@@ -37,7 +37,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>org.openapitools.demo.SimpleBlockDemo</mainClass>
+                  <mainClass>ai.buildin.demo.SimpleBlockDemo</mainClass>
                 </transformer>
               </transformers>
             </configuration>

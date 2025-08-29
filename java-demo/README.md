@@ -13,7 +13,9 @@ java-demo/
 │   ├── SimpleBlockDemo.java         # 简化的块操作演示
 │   ├── CreateDatabaseDemo.java      # 创建数据库演示
 │   ├── CreateDatabaseRecordDemo.java # 创建数据库记录演示
-│   └── DeleteBlockDemo.java         # 删除块演示
+│   ├── DeleteBlockDemo.java         # 删除块演示
+│   ├── GetUserMeDemo.java           # 获取机器人创建者信息演示
+│   └── SearchDemo.java              # 搜索页面演示
 ├── .env.example                     # 环境变量配置示例
 ├── .gitignore                       # Git忽略文件配置
 ├── pom.xml                          # Maven项目配置
@@ -49,6 +51,21 @@ java-demo/
 ### DeleteBlockDemo.java
 块删除操作演示：
 - 删除指定的块
+
+### GetUserMeDemo.java
+获取机器人创建者信息演示，包括：
+- 调用 /v1/users/me 接口
+- 获取机器人创建者的用户信息
+- 显示用户ID、名称、邮箱、头像等详细信息
+- 错误处理和提示
+
+### SearchDemo.java
+搜索页面演示，包括：
+- 调用 /v1/search 接口进行页面搜索
+- 支持关键词搜索和列出所有授权页面
+- 分页查询和结果展示
+- 交互式搜索功能
+- 详细的搜索结果显示（页面信息、标题、父级等）
 
 ## 环境要求
 
@@ -110,6 +127,8 @@ mvn exec:java -Dexec.mainClass="ai.buildin.demo.BlockAddChildrenDemo"      # 完
 mvn exec:java -Dexec.mainClass="ai.buildin.demo.CreateDatabaseDemo"        # 创建数据库演示
 mvn exec:java -Dexec.mainClass="ai.buildin.demo.CreateDatabaseRecordDemo"  # 创建数据库记录演示
 mvn exec:java -Dexec.mainClass="ai.buildin.demo.DeleteBlockDemo"           # 删除块演示
+mvn exec:java -Dexec.mainClass="ai.buildin.demo.GetUserMeDemo"             # 获取机器人创建者信息演示
+mvn exec:java -Dexec.mainClass="ai.buildin.demo.SearchDemo"                # 搜索页面演示
 
 # 或者构建可执行JAR后运行
 mvn clean package

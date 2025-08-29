@@ -128,12 +128,14 @@ Class | Method | HTTP request | Description
 *DefaultApi* | [**getBlock**](docs/DefaultApi.md#getBlock) | **GET** /v1/blocks/{block_id} | 获取块
 *DefaultApi* | [**getBlockChildren**](docs/DefaultApi.md#getBlockChildren) | **GET** /v1/blocks/{block_id}/children | 获取子块
 *DefaultApi* | [**getDatabase**](docs/DefaultApi.md#getDatabase) | **GET** /v1/databases/{database_id} | 获取数据库
+*DefaultApi* | [**getMe**](docs/DefaultApi.md#getMe) | **GET** /v1/users/me | 获取机器人创建者信息
 *DefaultApi* | [**getPage**](docs/DefaultApi.md#getPage) | **GET** /v1/pages/{page_id} | 获取页面
 *DefaultApi* | [**queryDatabase**](docs/DefaultApi.md#queryDatabase) | **POST** /v1/databases/{database_id}/query | 查询数据库
 *DefaultApi* | [**searchPages**](docs/DefaultApi.md#searchPages) | **POST** /v1/pages/search | 搜索页面
 *DefaultApi* | [**updateBlock**](docs/DefaultApi.md#updateBlock) | **PATCH** /v1/blocks/{block_id} | 更新块
 *DefaultApi* | [**updateDatabase**](docs/DefaultApi.md#updateDatabase) | **PATCH** /v1/databases/{database_id} | 更新数据库
 *DefaultApi* | [**updatePage**](docs/DefaultApi.md#updatePage) | **PATCH** /v1/pages/{page_id} | 更新页面属性
+*DefaultApi* | [**v1Search**](docs/DefaultApi.md#v1Search) | **POST** /v1/search | 搜索页面
 
 
 ## Documentation for Models
@@ -192,6 +194,7 @@ Class | Method | HTTP request | Description
  - [ParentBlockId](docs/ParentBlockId.md)
  - [ParentDatabaseId](docs/ParentDatabaseId.md)
  - [ParentPageId](docs/ParentPageId.md)
+ - [ParentSpaceId](docs/ParentSpaceId.md)
  - [PropertySchema](docs/PropertySchema.md)
  - [PropertySchemaCheckbox](docs/PropertySchemaCheckbox.md)
  - [PropertySchemaDate](docs/PropertySchemaDate.md)
@@ -249,6 +252,14 @@ Class | Method | HTTP request | Description
  - [UpdateDatabaseRequestPropertiesValue](docs/UpdateDatabaseRequestPropertiesValue.md)
  - [UpdatePageRequest](docs/UpdatePageRequest.md)
  - [User](docs/User.md)
+ - [UserMe](docs/UserMe.md)
+ - [UserMePerson](docs/UserMePerson.md)
+ - [V1SearchPageResult](docs/V1SearchPageResult.md)
+ - [V1SearchPageResultParent](docs/V1SearchPageResultParent.md)
+ - [V1SearchPageResultProperties](docs/V1SearchPageResultProperties.md)
+ - [V1SearchPageResultPropertiesTitle](docs/V1SearchPageResultPropertiesTitle.md)
+ - [V1SearchRequest](docs/V1SearchRequest.md)
+ - [V1SearchResponse](docs/V1SearchResponse.md)
 
 
 <a id="documentation-for-authorization"></a>

@@ -32,6 +32,9 @@ import type {
   UpdateBlockRequest,
   UpdateDatabaseRequest,
   UpdatePageRequest,
+  UserMe,
+  V1SearchRequest,
+  V1SearchResponse,
 } from '../models/index';
 import {
     AppendBlockChildrenRequestFromJSON,
@@ -68,6 +71,12 @@ import {
     UpdateDatabaseRequestToJSON,
     UpdatePageRequestFromJSON,
     UpdatePageRequestToJSON,
+    UserMeFromJSON,
+    UserMeToJSON,
+    V1SearchRequestFromJSON,
+    V1SearchRequestToJSON,
+    V1SearchResponseFromJSON,
+    V1SearchResponseToJSON,
 } from '../models/index';
 
 export interface AppendBlockChildrenOperationRequest {
@@ -127,6 +136,10 @@ export interface UpdateDatabaseOperationRequest {
 export interface UpdatePageOperationRequest {
     pageId: string;
     updatePageRequest: UpdatePageRequest;
+}
+
+export interface V1SearchOperationRequest {
+    v1SearchRequest: V1SearchRequest;
 }
 
 /**
@@ -486,6 +499,45 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * 获取当前机器人的创建者用户信息
+     * 获取机器人创建者信息
+     */
+    async getMeRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserMe>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/users/me`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserMeFromJSON(jsonValue));
+    }
+
+    /**
+     * 获取当前机器人的创建者用户信息
+     * 获取机器人创建者信息
+     */
+    async getMe(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserMe> {
+        const response = await this.getMeRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
      * 根据ID获取页面对象
      * 获取页面
      */
@@ -799,6 +851,55 @@ export class DefaultApi extends runtime.BaseAPI {
      */
     async updatePage(requestParameters: UpdatePageOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Page> {
         const response = await this.updatePageRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * 在机器人授权的页面范围内搜索相关内容
+     * 搜索页面
+     */
+    async v1SearchRaw(requestParameters: V1SearchOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<V1SearchResponse>> {
+        if (requestParameters['v1SearchRequest'] == null) {
+            throw new runtime.RequiredError(
+                'v1SearchRequest',
+                'Required parameter "v1SearchRequest" was null or undefined when calling v1Search().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/search`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: V1SearchRequestToJSON(requestParameters['v1SearchRequest']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => V1SearchResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * 在机器人授权的页面范围内搜索相关内容
+     * 搜索页面
+     */
+    async v1Search(requestParameters: V1SearchOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<V1SearchResponse> {
+        const response = await this.v1SearchRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
