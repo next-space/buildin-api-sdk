@@ -2266,6 +2266,9 @@ components:
           items:
             $ref: "#/components/schemas/RichTextItem"
           type: array
+      required:
+      - title
+      - type
     PropertyValueRichText:
       properties:
         id:
@@ -2275,6 +2278,9 @@ components:
           items:
             $ref: "#/components/schemas/RichTextItem"
           type: array
+      required:
+      - rich_text
+      - type
     PropertyValueNumber:
       properties:
         id:
@@ -2283,6 +2289,9 @@ components:
         number:
           type: number
           nullable: true
+      required:
+      - number
+      - type
     PropertyValueSelect:
       properties:
         id:
@@ -2290,6 +2299,9 @@ components:
         type: {}
         select:
           $ref: "#/components/schemas/PropertyValueSelect_select"
+      required:
+      - select
+      - type
     PropertyValueMultiSelect:
       properties:
         id:
@@ -2299,6 +2311,9 @@ components:
           items:
             $ref: "#/components/schemas/PropertyValueMultiSelect_multi_select_inner"
           type: array
+      required:
+      - multi_select
+      - type
     PropertyValueDate:
       properties:
         id:
@@ -2306,6 +2321,9 @@ components:
         type: {}
         date:
           $ref: "#/components/schemas/PropertyValueDate_date"
+      required:
+      - date
+      - type
     PropertyValuePeople:
       properties:
         id:
@@ -2315,6 +2333,9 @@ components:
           items:
             $ref: "#/components/schemas/PropertyValuePeople_people_inner"
           type: array
+      required:
+      - people
+      - type
     PropertyValueFiles:
       properties:
         id:
@@ -2324,6 +2345,9 @@ components:
           items:
             $ref: "#/components/schemas/PropertyValueFiles_files_inner"
           type: array
+      required:
+      - files
+      - type
     PropertyValueCheckbox:
       properties:
         id:
@@ -2331,6 +2355,9 @@ components:
         type: {}
         checkbox:
           type: boolean
+      required:
+      - checkbox
+      - type
     PropertyValueUrl:
       properties:
         id:
@@ -2339,6 +2366,9 @@ components:
         url:
           type: string
           nullable: true
+      required:
+      - type
+      - url
     PropertyValueEmail:
       properties:
         id:
@@ -2347,6 +2377,9 @@ components:
         email:
           type: string
           nullable: true
+      required:
+      - email
+      - type
     PropertyValuePhoneNumber:
       properties:
         id:
@@ -2355,6 +2388,9 @@ components:
         phone_number:
           type: string
           nullable: true
+      required:
+      - phone_number
+      - type
     PropertyValueRelation:
       properties:
         id:
@@ -2364,6 +2400,9 @@ components:
           items:
             $ref: "#/components/schemas/CreatePagePropertyValueRelation_relation_inner"
           type: array
+      required:
+      - relation
+      - type
     CreateDatabaseRequest:
       example:
         cover:

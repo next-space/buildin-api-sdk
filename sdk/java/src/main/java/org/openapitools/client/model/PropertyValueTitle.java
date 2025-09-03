@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.openapitools.client.model.RichTextItem;
-import org.openapitools.jackson.nullable.JsonNullable;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -66,7 +65,7 @@ public class PropertyValueTitle {
 
   public static final String SERIALIZED_NAME_TITLE = "title";
   @SerializedName(SERIALIZED_NAME_TITLE)
-  @javax.annotation.Nullable
+  @javax.annotation.Nonnull
   private List<RichTextItem> title = new ArrayList<>();
 
   public PropertyValueTitle() {
@@ -110,7 +109,7 @@ public class PropertyValueTitle {
   }
 
 
-  public PropertyValueTitle title(@javax.annotation.Nullable List<RichTextItem> title) {
+  public PropertyValueTitle title(@javax.annotation.Nonnull List<RichTextItem> title) {
     this.title = title;
     return this;
   }
@@ -127,12 +126,12 @@ public class PropertyValueTitle {
    * Get title
    * @return title
    */
-  @javax.annotation.Nullable
+  @javax.annotation.Nonnull
   public List<RichTextItem> getTitle() {
     return title;
   }
 
-  public void setTitle(@javax.annotation.Nullable List<RichTextItem> title) {
+  public void setTitle(@javax.annotation.Nonnull List<RichTextItem> title) {
     this.title = title;
   }
 
@@ -152,20 +151,9 @@ public class PropertyValueTitle {
         Objects.equals(this.title, propertyValueTitle.title);
   }
 
-  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
-    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
-  }
-
   @Override
   public int hashCode() {
     return Objects.hash(id, type, title);
-  }
-
-  private static <T> int hashCodeNullable(JsonNullable<T> a) {
-    if (a == null) {
-      return 1;
-    }
-    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
   }
 
   @Override
@@ -199,7 +187,7 @@ public class PropertyValueTitle {
     openapiFields = new HashSet<String>(Arrays.asList("id", "type", "title"));
 
     // a set of required properties/fields (JSON key names)
-    openapiRequiredFields = new HashSet<String>(0);
+    openapiRequiredFields = new HashSet<String>(Arrays.asList("type", "title"));
   }
 
   /**
@@ -222,24 +210,27 @@ public class PropertyValueTitle {
           throw new IllegalArgumentException(String.format("The field `%s` in the JSON string is not defined in the `PropertyValueTitle` properties. JSON: %s", entry.getKey(), jsonElement.toString()));
         }
       }
+
+      // check to make sure all required properties/fields are present in the JSON string
+      for (String requiredField : PropertyValueTitle.openapiRequiredFields) {
+        if (jsonElement.getAsJsonObject().get(requiredField) == null) {
+          throw new IllegalArgumentException(String.format("The required field `%s` is not found in the JSON string: %s", requiredField, jsonElement.toString()));
+        }
+      }
         JsonObject jsonObj = jsonElement.getAsJsonObject();
       if ((jsonObj.get("id") != null && !jsonObj.get("id").isJsonNull()) && !jsonObj.get("id").isJsonPrimitive()) {
         throw new IllegalArgumentException(String.format("Expected the field `id` to be a primitive type in the JSON string but got `%s`", jsonObj.get("id").toString()));
       }
-      if (jsonObj.get("title") != null && !jsonObj.get("title").isJsonNull()) {
-        JsonArray jsonArraytitle = jsonObj.getAsJsonArray("title");
-        if (jsonArraytitle != null) {
-          // ensure the json data is an array
-          if (!jsonObj.get("title").isJsonArray()) {
-            throw new IllegalArgumentException(String.format("Expected the field `title` to be an array in the JSON string but got `%s`", jsonObj.get("title").toString()));
-          }
-
-          // validate the optional field `title` (array)
-          for (int i = 0; i < jsonArraytitle.size(); i++) {
-            RichTextItem.validateJsonElement(jsonArraytitle.get(i));
-          };
-        }
+      // ensure the json data is an array
+      if (!jsonObj.get("title").isJsonArray()) {
+        throw new IllegalArgumentException(String.format("Expected the field `title` to be an array in the JSON string but got `%s`", jsonObj.get("title").toString()));
       }
+
+      JsonArray jsonArraytitle = jsonObj.getAsJsonArray("title");
+      // validate the required field `title` (array)
+      for (int i = 0; i < jsonArraytitle.size(); i++) {
+        RichTextItem.validateJsonElement(jsonArraytitle.get(i));
+      };
   }
 
   public static class CustomTypeAdapterFactory implements TypeAdapterFactory {

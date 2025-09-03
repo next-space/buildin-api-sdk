@@ -44,7 +44,6 @@ import org.openapitools.client.model.PropertyValueSelectSelect;
 import org.openapitools.client.model.PropertyValueTitle;
 import org.openapitools.client.model.PropertyValueUrl;
 import org.openapitools.client.model.RichTextItem;
-import org.openapitools.jackson.nullable.JsonNullable;
 
 
 

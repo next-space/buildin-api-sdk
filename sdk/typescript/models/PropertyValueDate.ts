@@ -38,19 +38,21 @@ export interface PropertyValueDate {
      * @type {any}
      * @memberof PropertyValueDate
      */
-    type?: any | null;
+    type: any | null;
     /**
      * 
      * @type {PropertyValueDateDate}
      * @memberof PropertyValueDate
      */
-    date?: PropertyValueDateDate;
+    date: PropertyValueDateDate;
 }
 
 /**
  * Check if a given object implements the PropertyValueDate interface.
  */
 export function instanceOfPropertyValueDate(value: object): value is PropertyValueDate {
+    if (!('type' in value) || value['type'] === undefined) return false;
+    if (!('date' in value) || value['date'] === undefined) return false;
     return true;
 }
 
@@ -65,8 +67,8 @@ export function PropertyValueDateFromJSONTyped(json: any, ignoreDiscriminator: b
     return {
         
         'id': json['id'] == null ? undefined : json['id'],
-        'type': json['type'] == null ? undefined : json['type'],
-        'date': json['date'] == null ? undefined : PropertyValueDateDateFromJSON(json['date']),
+        'type': json['type'],
+        'date': PropertyValueDateDateFromJSON(json['date']),
     };
 }
 

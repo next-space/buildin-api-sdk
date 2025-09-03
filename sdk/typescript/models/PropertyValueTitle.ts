@@ -38,19 +38,21 @@ export interface PropertyValueTitle {
      * @type {any}
      * @memberof PropertyValueTitle
      */
-    type?: any | null;
+    type: any | null;
     /**
      * 
      * @type {Array<RichTextItem>}
      * @memberof PropertyValueTitle
      */
-    title?: Array<RichTextItem>;
+    title: Array<RichTextItem>;
 }
 
 /**
  * Check if a given object implements the PropertyValueTitle interface.
  */
 export function instanceOfPropertyValueTitle(value: object): value is PropertyValueTitle {
+    if (!('type' in value) || value['type'] === undefined) return false;
+    if (!('title' in value) || value['title'] === undefined) return false;
     return true;
 }
 
@@ -65,8 +67,8 @@ export function PropertyValueTitleFromJSONTyped(json: any, ignoreDiscriminator: 
     return {
         
         'id': json['id'] == null ? undefined : json['id'],
-        'type': json['type'] == null ? undefined : json['type'],
-        'title': json['title'] == null ? undefined : ((json['title'] as Array<any>).map(RichTextItemFromJSON)),
+        'type': json['type'],
+        'title': ((json['title'] as Array<any>).map(RichTextItemFromJSON)),
     };
 }
 
@@ -83,7 +85,7 @@ export function PropertyValueTitleToJSONTyped(value?: PropertyValueTitle | null,
         
         'id': value['id'],
         'type': value['type'],
-        'title': value['title'] == null ? undefined : ((value['title'] as Array<any>).map(RichTextItemToJSON)),
+        'title': ((value['title'] as Array<any>).map(RichTextItemToJSON)),
     };
 }
 

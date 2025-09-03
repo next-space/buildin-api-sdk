@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.openapitools.client.model.PropertyValuePeoplePeopleInner;
-import org.openapitools.jackson.nullable.JsonNullable;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -66,7 +65,7 @@ public class PropertyValuePeople {
 
   public static final String SERIALIZED_NAME_PEOPLE = "people";
   @SerializedName(SERIALIZED_NAME_PEOPLE)
-  @javax.annotation.Nullable
+  @javax.annotation.Nonnull
   private List<PropertyValuePeoplePeopleInner> people = new ArrayList<>();
 
   public PropertyValuePeople() {
@@ -110,7 +109,7 @@ public class PropertyValuePeople {
   }
 
 
-  public PropertyValuePeople people(@javax.annotation.Nullable List<PropertyValuePeoplePeopleInner> people) {
+  public PropertyValuePeople people(@javax.annotation.Nonnull List<PropertyValuePeoplePeopleInner> people) {
     this.people = people;
     return this;
   }
@@ -127,12 +126,12 @@ public class PropertyValuePeople {
    * Get people
    * @return people
    */
-  @javax.annotation.Nullable
+  @javax.annotation.Nonnull
   public List<PropertyValuePeoplePeopleInner> getPeople() {
     return people;
   }
 
-  public void setPeople(@javax.annotation.Nullable List<PropertyValuePeoplePeopleInner> people) {
+  public void setPeople(@javax.annotation.Nonnull List<PropertyValuePeoplePeopleInner> people) {
     this.people = people;
   }
 
@@ -152,20 +151,9 @@ public class PropertyValuePeople {
         Objects.equals(this.people, propertyValuePeople.people);
   }
 
-  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
-    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
-  }
-
   @Override
   public int hashCode() {
     return Objects.hash(id, type, people);
-  }
-
-  private static <T> int hashCodeNullable(JsonNullable<T> a) {
-    if (a == null) {
-      return 1;
-    }
-    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
   }
 
   @Override
@@ -199,7 +187,7 @@ public class PropertyValuePeople {
     openapiFields = new HashSet<String>(Arrays.asList("id", "type", "people"));
 
     // a set of required properties/fields (JSON key names)
-    openapiRequiredFields = new HashSet<String>(0);
+    openapiRequiredFields = new HashSet<String>(Arrays.asList("type", "people"));
   }
 
   /**
@@ -222,24 +210,27 @@ public class PropertyValuePeople {
           throw new IllegalArgumentException(String.format("The field `%s` in the JSON string is not defined in the `PropertyValuePeople` properties. JSON: %s", entry.getKey(), jsonElement.toString()));
         }
       }
+
+      // check to make sure all required properties/fields are present in the JSON string
+      for (String requiredField : PropertyValuePeople.openapiRequiredFields) {
+        if (jsonElement.getAsJsonObject().get(requiredField) == null) {
+          throw new IllegalArgumentException(String.format("The required field `%s` is not found in the JSON string: %s", requiredField, jsonElement.toString()));
+        }
+      }
         JsonObject jsonObj = jsonElement.getAsJsonObject();
       if ((jsonObj.get("id") != null && !jsonObj.get("id").isJsonNull()) && !jsonObj.get("id").isJsonPrimitive()) {
         throw new IllegalArgumentException(String.format("Expected the field `id` to be a primitive type in the JSON string but got `%s`", jsonObj.get("id").toString()));
       }
-      if (jsonObj.get("people") != null && !jsonObj.get("people").isJsonNull()) {
-        JsonArray jsonArraypeople = jsonObj.getAsJsonArray("people");
-        if (jsonArraypeople != null) {
-          // ensure the json data is an array
-          if (!jsonObj.get("people").isJsonArray()) {
-            throw new IllegalArgumentException(String.format("Expected the field `people` to be an array in the JSON string but got `%s`", jsonObj.get("people").toString()));
-          }
-
-          // validate the optional field `people` (array)
-          for (int i = 0; i < jsonArraypeople.size(); i++) {
-            PropertyValuePeoplePeopleInner.validateJsonElement(jsonArraypeople.get(i));
-          };
-        }
+      // ensure the json data is an array
+      if (!jsonObj.get("people").isJsonArray()) {
+        throw new IllegalArgumentException(String.format("Expected the field `people` to be an array in the JSON string but got `%s`", jsonObj.get("people").toString()));
       }
+
+      JsonArray jsonArraypeople = jsonObj.getAsJsonArray("people");
+      // validate the required field `people` (array)
+      for (int i = 0; i < jsonArraypeople.size(); i++) {
+        PropertyValuePeoplePeopleInner.validateJsonElement(jsonArraypeople.get(i));
+      };
   }
 
   public static class CustomTypeAdapterFactory implements TypeAdapterFactory {

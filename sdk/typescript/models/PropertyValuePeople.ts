@@ -38,19 +38,21 @@ export interface PropertyValuePeople {
      * @type {any}
      * @memberof PropertyValuePeople
      */
-    type?: any | null;
+    type: any | null;
     /**
      * 
      * @type {Array<PropertyValuePeoplePeopleInner>}
      * @memberof PropertyValuePeople
      */
-    people?: Array<PropertyValuePeoplePeopleInner>;
+    people: Array<PropertyValuePeoplePeopleInner>;
 }
 
 /**
  * Check if a given object implements the PropertyValuePeople interface.
  */
 export function instanceOfPropertyValuePeople(value: object): value is PropertyValuePeople {
+    if (!('type' in value) || value['type'] === undefined) return false;
+    if (!('people' in value) || value['people'] === undefined) return false;
     return true;
 }
 
@@ -65,8 +67,8 @@ export function PropertyValuePeopleFromJSONTyped(json: any, ignoreDiscriminator:
     return {
         
         'id': json['id'] == null ? undefined : json['id'],
-        'type': json['type'] == null ? undefined : json['type'],
-        'people': json['people'] == null ? undefined : ((json['people'] as Array<any>).map(PropertyValuePeoplePeopleInnerFromJSON)),
+        'type': json['type'],
+        'people': ((json['people'] as Array<any>).map(PropertyValuePeoplePeopleInnerFromJSON)),
     };
 }
 
@@ -83,7 +85,7 @@ export function PropertyValuePeopleToJSONTyped(value?: PropertyValuePeople | nul
         
         'id': value['id'],
         'type': value['type'],
-        'people': value['people'] == null ? undefined : ((value['people'] as Array<any>).map(PropertyValuePeoplePeopleInnerToJSON)),
+        'people': ((value['people'] as Array<any>).map(PropertyValuePeoplePeopleInnerToJSON)),
     };
 }
 

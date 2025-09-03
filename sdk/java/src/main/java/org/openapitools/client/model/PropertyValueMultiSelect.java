@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.openapitools.client.model.PropertyValueMultiSelectMultiSelectInner;
-import org.openapitools.jackson.nullable.JsonNullable;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -66,7 +65,7 @@ public class PropertyValueMultiSelect {
 
   public static final String SERIALIZED_NAME_MULTI_SELECT = "multi_select";
   @SerializedName(SERIALIZED_NAME_MULTI_SELECT)
-  @javax.annotation.Nullable
+  @javax.annotation.Nonnull
   private List<PropertyValueMultiSelectMultiSelectInner> multiSelect = new ArrayList<>();
 
   public PropertyValueMultiSelect() {
@@ -110,7 +109,7 @@ public class PropertyValueMultiSelect {
   }
 
 
-  public PropertyValueMultiSelect multiSelect(@javax.annotation.Nullable List<PropertyValueMultiSelectMultiSelectInner> multiSelect) {
+  public PropertyValueMultiSelect multiSelect(@javax.annotation.Nonnull List<PropertyValueMultiSelectMultiSelectInner> multiSelect) {
     this.multiSelect = multiSelect;
     return this;
   }
@@ -127,12 +126,12 @@ public class PropertyValueMultiSelect {
    * Get multiSelect
    * @return multiSelect
    */
-  @javax.annotation.Nullable
+  @javax.annotation.Nonnull
   public List<PropertyValueMultiSelectMultiSelectInner> getMultiSelect() {
     return multiSelect;
   }
 
-  public void setMultiSelect(@javax.annotation.Nullable List<PropertyValueMultiSelectMultiSelectInner> multiSelect) {
+  public void setMultiSelect(@javax.annotation.Nonnull List<PropertyValueMultiSelectMultiSelectInner> multiSelect) {
     this.multiSelect = multiSelect;
   }
 
@@ -152,20 +151,9 @@ public class PropertyValueMultiSelect {
         Objects.equals(this.multiSelect, propertyValueMultiSelect.multiSelect);
   }
 
-  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
-    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
-  }
-
   @Override
   public int hashCode() {
     return Objects.hash(id, type, multiSelect);
-  }
-
-  private static <T> int hashCodeNullable(JsonNullable<T> a) {
-    if (a == null) {
-      return 1;
-    }
-    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
   }
 
   @Override
@@ -199,7 +187,7 @@ public class PropertyValueMultiSelect {
     openapiFields = new HashSet<String>(Arrays.asList("id", "type", "multi_select"));
 
     // a set of required properties/fields (JSON key names)
-    openapiRequiredFields = new HashSet<String>(0);
+    openapiRequiredFields = new HashSet<String>(Arrays.asList("type", "multi_select"));
   }
 
   /**
@@ -222,24 +210,27 @@ public class PropertyValueMultiSelect {
           throw new IllegalArgumentException(String.format("The field `%s` in the JSON string is not defined in the `PropertyValueMultiSelect` properties. JSON: %s", entry.getKey(), jsonElement.toString()));
         }
       }
+
+      // check to make sure all required properties/fields are present in the JSON string
+      for (String requiredField : PropertyValueMultiSelect.openapiRequiredFields) {
+        if (jsonElement.getAsJsonObject().get(requiredField) == null) {
+          throw new IllegalArgumentException(String.format("The required field `%s` is not found in the JSON string: %s", requiredField, jsonElement.toString()));
+        }
+      }
         JsonObject jsonObj = jsonElement.getAsJsonObject();
       if ((jsonObj.get("id") != null && !jsonObj.get("id").isJsonNull()) && !jsonObj.get("id").isJsonPrimitive()) {
         throw new IllegalArgumentException(String.format("Expected the field `id` to be a primitive type in the JSON string but got `%s`", jsonObj.get("id").toString()));
       }
-      if (jsonObj.get("multi_select") != null && !jsonObj.get("multi_select").isJsonNull()) {
-        JsonArray jsonArraymultiSelect = jsonObj.getAsJsonArray("multi_select");
-        if (jsonArraymultiSelect != null) {
-          // ensure the json data is an array
-          if (!jsonObj.get("multi_select").isJsonArray()) {
-            throw new IllegalArgumentException(String.format("Expected the field `multi_select` to be an array in the JSON string but got `%s`", jsonObj.get("multi_select").toString()));
-          }
-
-          // validate the optional field `multi_select` (array)
-          for (int i = 0; i < jsonArraymultiSelect.size(); i++) {
-            PropertyValueMultiSelectMultiSelectInner.validateJsonElement(jsonArraymultiSelect.get(i));
-          };
-        }
+      // ensure the json data is an array
+      if (!jsonObj.get("multi_select").isJsonArray()) {
+        throw new IllegalArgumentException(String.format("Expected the field `multi_select` to be an array in the JSON string but got `%s`", jsonObj.get("multi_select").toString()));
       }
+
+      JsonArray jsonArraymultiSelect = jsonObj.getAsJsonArray("multi_select");
+      // validate the required field `multi_select` (array)
+      for (int i = 0; i < jsonArraymultiSelect.size(); i++) {
+        PropertyValueMultiSelectMultiSelectInner.validateJsonElement(jsonArraymultiSelect.get(i));
+      };
   }
 
   public static class CustomTypeAdapterFactory implements TypeAdapterFactory {

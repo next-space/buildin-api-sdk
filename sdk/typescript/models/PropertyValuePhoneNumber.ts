@@ -30,19 +30,21 @@ export interface PropertyValuePhoneNumber {
      * @type {any}
      * @memberof PropertyValuePhoneNumber
      */
-    type?: any | null;
+    type: any | null;
     /**
      * 
      * @type {string}
      * @memberof PropertyValuePhoneNumber
      */
-    phone_number?: string;
+    phone_number: string;
 }
 
 /**
  * Check if a given object implements the PropertyValuePhoneNumber interface.
  */
 export function instanceOfPropertyValuePhoneNumber(value: object): value is PropertyValuePhoneNumber {
+    if (!('type' in value) || value['type'] === undefined) return false;
+    if (!('phone_number' in value) || value['phone_number'] === undefined) return false;
     return true;
 }
 
@@ -57,8 +59,8 @@ export function PropertyValuePhoneNumberFromJSONTyped(json: any, ignoreDiscrimin
     return {
         
         'id': json['id'] == null ? undefined : json['id'],
-        'type': json['type'] == null ? undefined : json['type'],
-        'phone_number': json['phone_number'] == null ? undefined : json['phone_number'],
+        'type': json['type'],
+        'phone_number': json['phone_number'],
     };
 }
 

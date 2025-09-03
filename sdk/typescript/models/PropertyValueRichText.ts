@@ -38,19 +38,21 @@ export interface PropertyValueRichText {
      * @type {any}
      * @memberof PropertyValueRichText
      */
-    type?: any | null;
+    type: any | null;
     /**
      * 
      * @type {Array<RichTextItem>}
      * @memberof PropertyValueRichText
      */
-    rich_text?: Array<RichTextItem>;
+    rich_text: Array<RichTextItem>;
 }
 
 /**
  * Check if a given object implements the PropertyValueRichText interface.
  */
 export function instanceOfPropertyValueRichText(value: object): value is PropertyValueRichText {
+    if (!('type' in value) || value['type'] === undefined) return false;
+    if (!('rich_text' in value) || value['rich_text'] === undefined) return false;
     return true;
 }
 
@@ -65,8 +67,8 @@ export function PropertyValueRichTextFromJSONTyped(json: any, ignoreDiscriminato
     return {
         
         'id': json['id'] == null ? undefined : json['id'],
-        'type': json['type'] == null ? undefined : json['type'],
-        'rich_text': json['rich_text'] == null ? undefined : ((json['rich_text'] as Array<any>).map(RichTextItemFromJSON)),
+        'type': json['type'],
+        'rich_text': ((json['rich_text'] as Array<any>).map(RichTextItemFromJSON)),
     };
 }
 
@@ -83,7 +85,7 @@ export function PropertyValueRichTextToJSONTyped(value?: PropertyValueRichText |
         
         'id': value['id'],
         'type': value['type'],
-        'rich_text': value['rich_text'] == null ? undefined : ((value['rich_text'] as Array<any>).map(RichTextItemToJSON)),
+        'rich_text': ((value['rich_text'] as Array<any>).map(RichTextItemToJSON)),
     };
 }
 

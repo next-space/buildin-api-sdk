@@ -30,19 +30,21 @@ export interface PropertyValueEmail {
      * @type {any}
      * @memberof PropertyValueEmail
      */
-    type?: any | null;
+    type: any | null;
     /**
      * 
      * @type {string}
      * @memberof PropertyValueEmail
      */
-    email?: string;
+    email: string;
 }
 
 /**
  * Check if a given object implements the PropertyValueEmail interface.
  */
 export function instanceOfPropertyValueEmail(value: object): value is PropertyValueEmail {
+    if (!('type' in value) || value['type'] === undefined) return false;
+    if (!('email' in value) || value['email'] === undefined) return false;
     return true;
 }
 
@@ -57,8 +59,8 @@ export function PropertyValueEmailFromJSONTyped(json: any, ignoreDiscriminator: 
     return {
         
         'id': json['id'] == null ? undefined : json['id'],
-        'type': json['type'] == null ? undefined : json['type'],
-        'email': json['email'] == null ? undefined : json['email'],
+        'type': json['type'],
+        'email': json['email'],
     };
 }
 

@@ -8,8 +8,8 @@
 | Name | Type | Description | Notes |
 |------------ | ------------- | ------------- | -------------|
 |**id** | **String** |  |  [optional] |
-|**type** | **Object** |  |  [optional] |
-|**title** | [**List&lt;RichTextItem&gt;**](RichTextItem.md) |  |  [optional] |
+|**type** | **Object** |  |  |
+|**title** | [**List&lt;RichTextItem&gt;**](RichTextItem.md) |  |  |
 
 
 

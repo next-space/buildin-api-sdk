@@ -8,8 +8,8 @@
 | Name | Type | Description | Notes |
 |------------ | ------------- | ------------- | -------------|
 |**id** | **String** |  |  [optional] |
-|**type** | **Object** |  |  [optional] |
-|**checkbox** | **Boolean** |  |  [optional] |
+|**type** | **Object** |  |  |
+|**checkbox** | **Boolean** |  |  |
 
 
 

@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.openapitools.client.model.PropertyValueFilesFilesInner;
-import org.openapitools.jackson.nullable.JsonNullable;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -66,7 +65,7 @@ public class PropertyValueFiles {
 
   public static final String SERIALIZED_NAME_FILES = "files";
   @SerializedName(SERIALIZED_NAME_FILES)
-  @javax.annotation.Nullable
+  @javax.annotation.Nonnull
   private List<PropertyValueFilesFilesInner> files = new ArrayList<>();
 
   public PropertyValueFiles() {
@@ -110,7 +109,7 @@ public class PropertyValueFiles {
   }
 
 
-  public PropertyValueFiles files(@javax.annotation.Nullable List<PropertyValueFilesFilesInner> files) {
+  public PropertyValueFiles files(@javax.annotation.Nonnull List<PropertyValueFilesFilesInner> files) {
     this.files = files;
     return this;
   }
@@ -127,12 +126,12 @@ public class PropertyValueFiles {
    * Get files
    * @return files
    */
-  @javax.annotation.Nullable
+  @javax.annotation.Nonnull
   public List<PropertyValueFilesFilesInner> getFiles() {
     return files;
   }
 
-  public void setFiles(@javax.annotation.Nullable List<PropertyValueFilesFilesInner> files) {
+  public void setFiles(@javax.annotation.Nonnull List<PropertyValueFilesFilesInner> files) {
     this.files = files;
   }
 
@@ -152,20 +151,9 @@ public class PropertyValueFiles {
         Objects.equals(this.files, propertyValueFiles.files);
   }
 
-  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
-    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
-  }
-
   @Override
   public int hashCode() {
     return Objects.hash(id, type, files);
-  }
-
-  private static <T> int hashCodeNullable(JsonNullable<T> a) {
-    if (a == null) {
-      return 1;
-    }
-    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
   }
 
   @Override
@@ -199,7 +187,7 @@ public class PropertyValueFiles {
     openapiFields = new HashSet<String>(Arrays.asList("id", "type", "files"));
 
     // a set of required properties/fields (JSON key names)
-    openapiRequiredFields = new HashSet<String>(0);
+    openapiRequiredFields = new HashSet<String>(Arrays.asList("type", "files"));
   }
 
   /**
@@ -222,24 +210,27 @@ public class PropertyValueFiles {
           throw new IllegalArgumentException(String.format("The field `%s` in the JSON string is not defined in the `PropertyValueFiles` properties. JSON: %s", entry.getKey(), jsonElement.toString()));
         }
       }
+
+      // check to make sure all required properties/fields are present in the JSON string
+      for (String requiredField : PropertyValueFiles.openapiRequiredFields) {
+        if (jsonElement.getAsJsonObject().get(requiredField) == null) {
+          throw new IllegalArgumentException(String.format("The required field `%s` is not found in the JSON string: %s", requiredField, jsonElement.toString()));
+        }
+      }
         JsonObject jsonObj = jsonElement.getAsJsonObject();
       if ((jsonObj.get("id") != null && !jsonObj.get("id").isJsonNull()) && !jsonObj.get("id").isJsonPrimitive()) {
         throw new IllegalArgumentException(String.format("Expected the field `id` to be a primitive type in the JSON string but got `%s`", jsonObj.get("id").toString()));
       }
-      if (jsonObj.get("files") != null && !jsonObj.get("files").isJsonNull()) {
-        JsonArray jsonArrayfiles = jsonObj.getAsJsonArray("files");
-        if (jsonArrayfiles != null) {
-          // ensure the json data is an array
-          if (!jsonObj.get("files").isJsonArray()) {
-            throw new IllegalArgumentException(String.format("Expected the field `files` to be an array in the JSON string but got `%s`", jsonObj.get("files").toString()));
-          }
-
-          // validate the optional field `files` (array)
-          for (int i = 0; i < jsonArrayfiles.size(); i++) {
-            PropertyValueFilesFilesInner.validateJsonElement(jsonArrayfiles.get(i));
-          };
-        }
+      // ensure the json data is an array
+      if (!jsonObj.get("files").isJsonArray()) {
+        throw new IllegalArgumentException(String.format("Expected the field `files` to be an array in the JSON string but got `%s`", jsonObj.get("files").toString()));
       }
+
+      JsonArray jsonArrayfiles = jsonObj.getAsJsonArray("files");
+      // validate the required field `files` (array)
+      for (int i = 0; i < jsonArrayfiles.size(); i++) {
+        PropertyValueFilesFilesInner.validateJsonElement(jsonArrayfiles.get(i));
+      };
   }
 
   public static class CustomTypeAdapterFactory implements TypeAdapterFactory {

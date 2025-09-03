@@ -30,19 +30,21 @@ export interface PropertyValueNumber {
      * @type {any}
      * @memberof PropertyValueNumber
      */
-    type?: any | null;
+    type: any | null;
     /**
      * 
      * @type {number}
      * @memberof PropertyValueNumber
      */
-    number?: number;
+    number: number;
 }
 
 /**
  * Check if a given object implements the PropertyValueNumber interface.
  */
 export function instanceOfPropertyValueNumber(value: object): value is PropertyValueNumber {
+    if (!('type' in value) || value['type'] === undefined) return false;
+    if (!('number' in value) || value['number'] === undefined) return false;
     return true;
 }
 
@@ -57,8 +59,8 @@ export function PropertyValueNumberFromJSONTyped(json: any, ignoreDiscriminator:
     return {
         
         'id': json['id'] == null ? undefined : json['id'],
-        'type': json['type'] == null ? undefined : json['type'],
-        'number': json['number'] == null ? undefined : json['number'],
+        'type': json['type'],
+        'number': json['number'],
     };
 }
 

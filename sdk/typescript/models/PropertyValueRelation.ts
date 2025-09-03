@@ -38,19 +38,21 @@ export interface PropertyValueRelation {
      * @type {any}
      * @memberof PropertyValueRelation
      */
-    type?: any | null;
+    type: any | null;
     /**
      * 
      * @type {Array<CreatePagePropertyValueRelationRelationInner>}
      * @memberof PropertyValueRelation
      */
-    relation?: Array<CreatePagePropertyValueRelationRelationInner>;
+    relation: Array<CreatePagePropertyValueRelationRelationInner>;
 }
 
 /**
  * Check if a given object implements the PropertyValueRelation interface.
  */
 export function instanceOfPropertyValueRelation(value: object): value is PropertyValueRelation {
+    if (!('type' in value) || value['type'] === undefined) return false;
+    if (!('relation' in value) || value['relation'] === undefined) return false;
     return true;
 }
 
@@ -65,8 +67,8 @@ export function PropertyValueRelationFromJSONTyped(json: any, ignoreDiscriminato
     return {
         
         'id': json['id'] == null ? undefined : json['id'],
-        'type': json['type'] == null ? undefined : json['type'],
-        'relation': json['relation'] == null ? undefined : ((json['relation'] as Array<any>).map(CreatePagePropertyValueRelationRelationInnerFromJSON)),
+        'type': json['type'],
+        'relation': ((json['relation'] as Array<any>).map(CreatePagePropertyValueRelationRelationInnerFromJSON)),
     };
 }
 
@@ -83,7 +85,7 @@ export function PropertyValueRelationToJSONTyped(value?: PropertyValueRelation |
         
         'id': value['id'],
         'type': value['type'],
-        'relation': value['relation'] == null ? undefined : ((value['relation'] as Array<any>).map(CreatePagePropertyValueRelationRelationInnerToJSON)),
+        'relation': ((value['relation'] as Array<any>).map(CreatePagePropertyValueRelationRelationInnerToJSON)),
     };
 }
 

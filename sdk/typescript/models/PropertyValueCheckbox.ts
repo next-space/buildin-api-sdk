@@ -30,19 +30,21 @@ export interface PropertyValueCheckbox {
      * @type {any}
      * @memberof PropertyValueCheckbox
      */
-    type?: any | null;
+    type: any | null;
     /**
      * 
      * @type {boolean}
      * @memberof PropertyValueCheckbox
      */
-    checkbox?: boolean;
+    checkbox: boolean;
 }
 
 /**
  * Check if a given object implements the PropertyValueCheckbox interface.
  */
 export function instanceOfPropertyValueCheckbox(value: object): value is PropertyValueCheckbox {
+    if (!('type' in value) || value['type'] === undefined) return false;
+    if (!('checkbox' in value) || value['checkbox'] === undefined) return false;
     return true;
 }
 
@@ -57,8 +59,8 @@ export function PropertyValueCheckboxFromJSONTyped(json: any, ignoreDiscriminato
     return {
         
         'id': json['id'] == null ? undefined : json['id'],
-        'type': json['type'] == null ? undefined : json['type'],
-        'checkbox': json['checkbox'] == null ? undefined : json['checkbox'],
+        'type': json['type'],
+        'checkbox': json['checkbox'],
     };
 }
 

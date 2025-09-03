@@ -22,7 +22,6 @@ import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import org.openapitools.client.model.PropertyValueSelectSelect;
-import org.openapitools.jackson.nullable.JsonNullable;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -64,7 +63,7 @@ public class PropertyValueSelect {
 
   public static final String SERIALIZED_NAME_SELECT = "select";
   @SerializedName(SERIALIZED_NAME_SELECT)
-  @javax.annotation.Nullable
+  @javax.annotation.Nonnull
   private PropertyValueSelectSelect select;
 
   public PropertyValueSelect() {
@@ -108,7 +107,7 @@ public class PropertyValueSelect {
   }
 
 
-  public PropertyValueSelect select(@javax.annotation.Nullable PropertyValueSelectSelect select) {
+  public PropertyValueSelect select(@javax.annotation.Nonnull PropertyValueSelectSelect select) {
     this.select = select;
     return this;
   }
@@ -117,12 +116,12 @@ public class PropertyValueSelect {
    * Get select
    * @return select
    */
-  @javax.annotation.Nullable
+  @javax.annotation.Nonnull
   public PropertyValueSelectSelect getSelect() {
     return select;
   }
 
-  public void setSelect(@javax.annotation.Nullable PropertyValueSelectSelect select) {
+  public void setSelect(@javax.annotation.Nonnull PropertyValueSelectSelect select) {
     this.select = select;
   }
 
@@ -142,20 +141,9 @@ public class PropertyValueSelect {
         Objects.equals(this.select, propertyValueSelect.select);
   }
 
-  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
-    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
-  }
-
   @Override
   public int hashCode() {
     return Objects.hash(id, type, select);
-  }
-
-  private static <T> int hashCodeNullable(JsonNullable<T> a) {
-    if (a == null) {
-      return 1;
-    }
-    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
   }
 
   @Override
@@ -189,7 +177,7 @@ public class PropertyValueSelect {
     openapiFields = new HashSet<String>(Arrays.asList("id", "type", "select"));
 
     // a set of required properties/fields (JSON key names)
-    openapiRequiredFields = new HashSet<String>(0);
+    openapiRequiredFields = new HashSet<String>(Arrays.asList("type", "select"));
   }
 
   /**
@@ -212,14 +200,19 @@ public class PropertyValueSelect {
           throw new IllegalArgumentException(String.format("The field `%s` in the JSON string is not defined in the `PropertyValueSelect` properties. JSON: %s", entry.getKey(), jsonElement.toString()));
         }
       }
+
+      // check to make sure all required properties/fields are present in the JSON string
+      for (String requiredField : PropertyValueSelect.openapiRequiredFields) {
+        if (jsonElement.getAsJsonObject().get(requiredField) == null) {
+          throw new IllegalArgumentException(String.format("The required field `%s` is not found in the JSON string: %s", requiredField, jsonElement.toString()));
+        }
+      }
         JsonObject jsonObj = jsonElement.getAsJsonObject();
       if ((jsonObj.get("id") != null && !jsonObj.get("id").isJsonNull()) && !jsonObj.get("id").isJsonPrimitive()) {
         throw new IllegalArgumentException(String.format("Expected the field `id` to be a primitive type in the JSON string but got `%s`", jsonObj.get("id").toString()));
       }
-      // validate the optional field `select`
-      if (jsonObj.get("select") != null && !jsonObj.get("select").isJsonNull()) {
-        PropertyValueSelectSelect.validateJsonElement(jsonObj.get("select"));
-      }
+      // validate the required field `select`
+      PropertyValueSelectSelect.validateJsonElement(jsonObj.get("select"));
   }
 
   public static class CustomTypeAdapterFactory implements TypeAdapterFactory {

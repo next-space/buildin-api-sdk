@@ -21,7 +21,6 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.util.Arrays;
-import org.openapitools.jackson.nullable.JsonNullable;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -63,7 +62,7 @@ public class PropertyValuePhoneNumber {
 
   public static final String SERIALIZED_NAME_PHONE_NUMBER = "phone_number";
   @SerializedName(SERIALIZED_NAME_PHONE_NUMBER)
-  @javax.annotation.Nullable
+  @javax.annotation.Nonnull
   private String phoneNumber;
 
   public PropertyValuePhoneNumber() {
@@ -107,7 +106,7 @@ public class PropertyValuePhoneNumber {
   }
 
 
-  public PropertyValuePhoneNumber phoneNumber(@javax.annotation.Nullable String phoneNumber) {
+  public PropertyValuePhoneNumber phoneNumber(@javax.annotation.Nonnull String phoneNumber) {
     this.phoneNumber = phoneNumber;
     return this;
   }
@@ -116,12 +115,12 @@ public class PropertyValuePhoneNumber {
    * Get phoneNumber
    * @return phoneNumber
    */
-  @javax.annotation.Nullable
+  @javax.annotation.Nonnull
   public String getPhoneNumber() {
     return phoneNumber;
   }
 
-  public void setPhoneNumber(@javax.annotation.Nullable String phoneNumber) {
+  public void setPhoneNumber(@javax.annotation.Nonnull String phoneNumber) {
     this.phoneNumber = phoneNumber;
   }
 
@@ -141,20 +140,9 @@ public class PropertyValuePhoneNumber {
         Objects.equals(this.phoneNumber, propertyValuePhoneNumber.phoneNumber);
   }
 
-  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
-    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
-  }
-
   @Override
   public int hashCode() {
     return Objects.hash(id, type, phoneNumber);
-  }
-
-  private static <T> int hashCodeNullable(JsonNullable<T> a) {
-    if (a == null) {
-      return 1;
-    }
-    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
   }
 
   @Override
@@ -188,7 +176,7 @@ public class PropertyValuePhoneNumber {
     openapiFields = new HashSet<String>(Arrays.asList("id", "type", "phone_number"));
 
     // a set of required properties/fields (JSON key names)
-    openapiRequiredFields = new HashSet<String>(0);
+    openapiRequiredFields = new HashSet<String>(Arrays.asList("type", "phone_number"));
   }
 
   /**
@@ -211,11 +199,18 @@ public class PropertyValuePhoneNumber {
           throw new IllegalArgumentException(String.format("The field `%s` in the JSON string is not defined in the `PropertyValuePhoneNumber` properties. JSON: %s", entry.getKey(), jsonElement.toString()));
         }
       }
+
+      // check to make sure all required properties/fields are present in the JSON string
+      for (String requiredField : PropertyValuePhoneNumber.openapiRequiredFields) {
+        if (jsonElement.getAsJsonObject().get(requiredField) == null) {
+          throw new IllegalArgumentException(String.format("The required field `%s` is not found in the JSON string: %s", requiredField, jsonElement.toString()));
+        }
+      }
         JsonObject jsonObj = jsonElement.getAsJsonObject();
       if ((jsonObj.get("id") != null && !jsonObj.get("id").isJsonNull()) && !jsonObj.get("id").isJsonPrimitive()) {
         throw new IllegalArgumentException(String.format("Expected the field `id` to be a primitive type in the JSON string but got `%s`", jsonObj.get("id").toString()));
       }
-      if ((jsonObj.get("phone_number") != null && !jsonObj.get("phone_number").isJsonNull()) && !jsonObj.get("phone_number").isJsonPrimitive()) {
+      if (!jsonObj.get("phone_number").isJsonPrimitive()) {
         throw new IllegalArgumentException(String.format("Expected the field `phone_number` to be a primitive type in the JSON string but got `%s`", jsonObj.get("phone_number").toString()));
       }
   }

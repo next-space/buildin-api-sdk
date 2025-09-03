@@ -22,7 +22,6 @@ import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import org.openapitools.client.model.PropertyValueDateDate;
-import org.openapitools.jackson.nullable.JsonNullable;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -64,7 +63,7 @@ public class PropertyValueDate {
 
   public static final String SERIALIZED_NAME_DATE = "date";
   @SerializedName(SERIALIZED_NAME_DATE)
-  @javax.annotation.Nullable
+  @javax.annotation.Nonnull
   private PropertyValueDateDate date;
 
   public PropertyValueDate() {
@@ -108,7 +107,7 @@ public class PropertyValueDate {
   }
 
 
-  public PropertyValueDate date(@javax.annotation.Nullable PropertyValueDateDate date) {
+  public PropertyValueDate date(@javax.annotation.Nonnull PropertyValueDateDate date) {
     this.date = date;
     return this;
   }
@@ -117,12 +116,12 @@ public class PropertyValueDate {
    * Get date
    * @return date
    */
-  @javax.annotation.Nullable
+  @javax.annotation.Nonnull
   public PropertyValueDateDate getDate() {
     return date;
   }
 
-  public void setDate(@javax.annotation.Nullable PropertyValueDateDate date) {
+  public void setDate(@javax.annotation.Nonnull PropertyValueDateDate date) {
     this.date = date;
   }
 
@@ -142,20 +141,9 @@ public class PropertyValueDate {
         Objects.equals(this.date, propertyValueDate.date);
   }
 
-  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
-    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
-  }
-
   @Override
   public int hashCode() {
     return Objects.hash(id, type, date);
-  }
-
-  private static <T> int hashCodeNullable(JsonNullable<T> a) {
-    if (a == null) {
-      return 1;
-    }
-    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
   }
 
   @Override
@@ -189,7 +177,7 @@ public class PropertyValueDate {
     openapiFields = new HashSet<String>(Arrays.asList("id", "type", "date"));
 
     // a set of required properties/fields (JSON key names)
-    openapiRequiredFields = new HashSet<String>(0);
+    openapiRequiredFields = new HashSet<String>(Arrays.asList("type", "date"));
   }
 
   /**
@@ -212,14 +200,19 @@ public class PropertyValueDate {
           throw new IllegalArgumentException(String.format("The field `%s` in the JSON string is not defined in the `PropertyValueDate` properties. JSON: %s", entry.getKey(), jsonElement.toString()));
         }
       }
+
+      // check to make sure all required properties/fields are present in the JSON string
+      for (String requiredField : PropertyValueDate.openapiRequiredFields) {
+        if (jsonElement.getAsJsonObject().get(requiredField) == null) {
+          throw new IllegalArgumentException(String.format("The required field `%s` is not found in the JSON string: %s", requiredField, jsonElement.toString()));
+        }
+      }
         JsonObject jsonObj = jsonElement.getAsJsonObject();
       if ((jsonObj.get("id") != null && !jsonObj.get("id").isJsonNull()) && !jsonObj.get("id").isJsonPrimitive()) {
         throw new IllegalArgumentException(String.format("Expected the field `id` to be a primitive type in the JSON string but got `%s`", jsonObj.get("id").toString()));
       }
-      // validate the optional field `date`
-      if (jsonObj.get("date") != null && !jsonObj.get("date").isJsonNull()) {
-        PropertyValueDateDate.validateJsonElement(jsonObj.get("date"));
-      }
+      // validate the required field `date`
+      PropertyValueDateDate.validateJsonElement(jsonObj.get("date"));
   }
 
   public static class CustomTypeAdapterFactory implements TypeAdapterFactory {

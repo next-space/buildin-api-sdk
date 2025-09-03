@@ -38,19 +38,21 @@ export interface PropertyValueSelect {
      * @type {any}
      * @memberof PropertyValueSelect
      */
-    type?: any | null;
+    type: any | null;
     /**
      * 
      * @type {PropertyValueSelectSelect}
      * @memberof PropertyValueSelect
      */
-    select?: PropertyValueSelectSelect;
+    select: PropertyValueSelectSelect;
 }
 
 /**
  * Check if a given object implements the PropertyValueSelect interface.
  */
 export function instanceOfPropertyValueSelect(value: object): value is PropertyValueSelect {
+    if (!('type' in value) || value['type'] === undefined) return false;
+    if (!('select' in value) || value['select'] === undefined) return false;
     return true;
 }
 
@@ -65,8 +67,8 @@ export function PropertyValueSelectFromJSONTyped(json: any, ignoreDiscriminator:
     return {
         
         'id': json['id'] == null ? undefined : json['id'],
-        'type': json['type'] == null ? undefined : json['type'],
-        'select': json['select'] == null ? undefined : PropertyValueSelectSelectFromJSON(json['select']),
+        'type': json['type'],
+        'select': PropertyValueSelectSelectFromJSON(json['select']),
     };
 }
 

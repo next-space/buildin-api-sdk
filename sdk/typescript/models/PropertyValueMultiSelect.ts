@@ -38,19 +38,21 @@ export interface PropertyValueMultiSelect {
      * @type {any}
      * @memberof PropertyValueMultiSelect
      */
-    type?: any | null;
+    type: any | null;
     /**
      * 
      * @type {Array<PropertyValueMultiSelectMultiSelectInner>}
      * @memberof PropertyValueMultiSelect
      */
-    multi_select?: Array<PropertyValueMultiSelectMultiSelectInner>;
+    multi_select: Array<PropertyValueMultiSelectMultiSelectInner>;
 }
 
 /**
  * Check if a given object implements the PropertyValueMultiSelect interface.
  */
 export function instanceOfPropertyValueMultiSelect(value: object): value is PropertyValueMultiSelect {
+    if (!('type' in value) || value['type'] === undefined) return false;
+    if (!('multi_select' in value) || value['multi_select'] === undefined) return false;
     return true;
 }
 
@@ -65,8 +67,8 @@ export function PropertyValueMultiSelectFromJSONTyped(json: any, ignoreDiscrimin
     return {
         
         'id': json['id'] == null ? undefined : json['id'],
-        'type': json['type'] == null ? undefined : json['type'],
-        'multi_select': json['multi_select'] == null ? undefined : ((json['multi_select'] as Array<any>).map(PropertyValueMultiSelectMultiSelectInnerFromJSON)),
+        'type': json['type'],
+        'multi_select': ((json['multi_select'] as Array<any>).map(PropertyValueMultiSelectMultiSelectInnerFromJSON)),
     };
 }
 
@@ -83,7 +85,7 @@ export function PropertyValueMultiSelectToJSONTyped(value?: PropertyValueMultiSe
         
         'id': value['id'],
         'type': value['type'],
-        'multi_select': value['multi_select'] == null ? undefined : ((value['multi_select'] as Array<any>).map(PropertyValueMultiSelectMultiSelectInnerToJSON)),
+        'multi_select': ((value['multi_select'] as Array<any>).map(PropertyValueMultiSelectMultiSelectInnerToJSON)),
     };
 }
 

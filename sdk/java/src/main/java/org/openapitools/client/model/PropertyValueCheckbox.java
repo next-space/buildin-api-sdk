@@ -21,7 +21,6 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.util.Arrays;
-import org.openapitools.jackson.nullable.JsonNullable;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -63,7 +62,7 @@ public class PropertyValueCheckbox {
 
   public static final String SERIALIZED_NAME_CHECKBOX = "checkbox";
   @SerializedName(SERIALIZED_NAME_CHECKBOX)
-  @javax.annotation.Nullable
+  @javax.annotation.Nonnull
   private Boolean checkbox;
 
   public PropertyValueCheckbox() {
@@ -107,7 +106,7 @@ public class PropertyValueCheckbox {
   }
 
 
-  public PropertyValueCheckbox checkbox(@javax.annotation.Nullable Boolean checkbox) {
+  public PropertyValueCheckbox checkbox(@javax.annotation.Nonnull Boolean checkbox) {
     this.checkbox = checkbox;
     return this;
   }
@@ -116,12 +115,12 @@ public class PropertyValueCheckbox {
    * Get checkbox
    * @return checkbox
    */
-  @javax.annotation.Nullable
+  @javax.annotation.Nonnull
   public Boolean getCheckbox() {
     return checkbox;
   }
 
-  public void setCheckbox(@javax.annotation.Nullable Boolean checkbox) {
+  public void setCheckbox(@javax.annotation.Nonnull Boolean checkbox) {
     this.checkbox = checkbox;
   }
 
@@ -141,20 +140,9 @@ public class PropertyValueCheckbox {
         Objects.equals(this.checkbox, propertyValueCheckbox.checkbox);
   }
 
-  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
-    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
-  }
-
   @Override
   public int hashCode() {
     return Objects.hash(id, type, checkbox);
-  }
-
-  private static <T> int hashCodeNullable(JsonNullable<T> a) {
-    if (a == null) {
-      return 1;
-    }
-    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
   }
 
   @Override
@@ -188,7 +176,7 @@ public class PropertyValueCheckbox {
     openapiFields = new HashSet<String>(Arrays.asList("id", "type", "checkbox"));
 
     // a set of required properties/fields (JSON key names)
-    openapiRequiredFields = new HashSet<String>(0);
+    openapiRequiredFields = new HashSet<String>(Arrays.asList("type", "checkbox"));
   }
 
   /**
@@ -209,6 +197,13 @@ public class PropertyValueCheckbox {
       for (Map.Entry<String, JsonElement> entry : entries) {
         if (!PropertyValueCheckbox.openapiFields.contains(entry.getKey())) {
           throw new IllegalArgumentException(String.format("The field `%s` in the JSON string is not defined in the `PropertyValueCheckbox` properties. JSON: %s", entry.getKey(), jsonElement.toString()));
+        }
+      }
+
+      // check to make sure all required properties/fields are present in the JSON string
+      for (String requiredField : PropertyValueCheckbox.openapiRequiredFields) {
+        if (jsonElement.getAsJsonObject().get(requiredField) == null) {
+          throw new IllegalArgumentException(String.format("The required field `%s` is not found in the JSON string: %s", requiredField, jsonElement.toString()));
         }
       }
         JsonObject jsonObj = jsonElement.getAsJsonObject();

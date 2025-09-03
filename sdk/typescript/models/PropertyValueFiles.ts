@@ -38,19 +38,21 @@ export interface PropertyValueFiles {
      * @type {any}
      * @memberof PropertyValueFiles
      */
-    type?: any | null;
+    type: any | null;
     /**
      * 
      * @type {Array<PropertyValueFilesFilesInner>}
      * @memberof PropertyValueFiles
      */
-    files?: Array<PropertyValueFilesFilesInner>;
+    files: Array<PropertyValueFilesFilesInner>;
 }
 
 /**
  * Check if a given object implements the PropertyValueFiles interface.
  */
 export function instanceOfPropertyValueFiles(value: object): value is PropertyValueFiles {
+    if (!('type' in value) || value['type'] === undefined) return false;
+    if (!('files' in value) || value['files'] === undefined) return false;
     return true;
 }
 
@@ -65,8 +67,8 @@ export function PropertyValueFilesFromJSONTyped(json: any, ignoreDiscriminator: 
     return {
         
         'id': json['id'] == null ? undefined : json['id'],
-        'type': json['type'] == null ? undefined : json['type'],
-        'files': json['files'] == null ? undefined : ((json['files'] as Array<any>).map(PropertyValueFilesFilesInnerFromJSON)),
+        'type': json['type'],
+        'files': ((json['files'] as Array<any>).map(PropertyValueFilesFilesInnerFromJSON)),
     };
 }
 
@@ -83,7 +85,7 @@ export function PropertyValueFilesToJSONTyped(value?: PropertyValueFiles | null,
         
         'id': value['id'],
         'type': value['type'],
-        'files': value['files'] == null ? undefined : ((value['files'] as Array<any>).map(PropertyValueFilesFilesInnerToJSON)),
+        'files': ((value['files'] as Array<any>).map(PropertyValueFilesFilesInnerToJSON)),
     };
 }
 

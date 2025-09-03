@@ -916,15 +916,16 @@
           "relation": { "type": "array", "items": { "type": "object", "properties": { "id": { "type": "string", "format": "uuid" } }, "required": ["id"] } }
         }
       },
-      "PropertyValueTitle": { "properties": { "id": { "type": "string" }, "type": { "const": "title" }, "title": { "type": "array", "items": { "$ref": "#/components/schemas/RichTextItem" } } } },
-      "PropertyValueRichText": { "properties": { "id": { "type": "string" }, "type": { "const": "rich_text" }, "rich_text": { "type": "array", "items": { "$ref": "#/components/schemas/RichTextItem" } } } },
-      "PropertyValueNumber": { "properties": { "id": { "type": "string" }, "type": { "const": "number" }, "number": { "type": "number", "nullable": true } } },
-      "PropertyValueSelect": { "properties": { "id": { "type": "string" }, "type": { "const": "select" }, "select": { "type": "object", "nullable": true, "properties": { "id": { "type": "string" }, "name": { "type": "string" }, "color": { "type": "string" } } } } },
-      "PropertyValueMultiSelect": { "properties": { "id": { "type": "string" }, "type": { "const": "multi_select" }, "multi_select": { "type": "array", "items": { "type": "object", "properties": { "id": { "type": "string" }, "name": { "type": "string" }, "color": { "type": "string" } } } } } },
-      "PropertyValueDate": { "properties": { "id": { "type": "string" }, "type": { "const": "date" }, "date": { "type": "object", "nullable": true, "properties": { "start": { "type": "string", "description": "开始日期" }, "end": { "type": "string", "description": "结束日期（可选）" }, "time_zone": { "type": "string", "description": "时区" } } } } },
-      "PropertyValuePeople": { "properties": { "id": { "type": "string" }, "type": { "const": "people" }, "people": { "type": "array", "items": { "type": "object", "properties": { "object": { "type": "string", "const": "user" }, "id": { "type": "string", "format": "uuid" } } } } } },
+      "PropertyValueTitle": { "type": "object", "required": ["type", "title"], "properties": { "id": { "type": "string" }, "type": { "const": "title" }, "title": { "type": "array", "items": { "$ref": "#/components/schemas/RichTextItem" } } } },
+      "PropertyValueRichText": { "type": "object", "required": ["type", "rich_text"], "properties": { "id": { "type": "string" }, "type": { "const": "rich_text" }, "rich_text": { "type": "array", "items": { "$ref": "#/components/schemas/RichTextItem" } } } },
+      "PropertyValueNumber": { "type": "object", "required": ["type", "number"], "properties": { "id": { "type": "string" }, "type": { "const": "number" }, "number": { "type": "number", "nullable": true } } },
+      "PropertyValueSelect": { "type": "object", "required": ["type", "select"], "properties": { "id": { "type": "string" }, "type": { "const": "select" }, "select": { "type": "object", "nullable": true, "properties": { "id": { "type": "string" }, "name": { "type": "string" }, "color": { "type": "string" } } } } },
+      "PropertyValueMultiSelect": { "type": "object", "required": ["type", "multi_select"], "properties": { "id": { "type": "string" }, "type": { "const": "multi_select" }, "multi_select": { "type": "array", "items": { "type": "object", "properties": { "id": { "type": "string" }, "name": { "type": "string" }, "color": { "type": "string" } } } } } },
+
+      "PropertyValueDate": { "type": "object", "required": ["type", "date"], "properties": { "id": { "type": "string" }, "type": { "const": "date" }, "date": { "type": "object", "nullable": true, "properties": { "start": { "type": "string", "description": "开始日期" }, "end": { "type": "string", "description": "结束日期（可选）" }, "time_zone": { "type": "string", "description": "时区" } } } } },
+      "PropertyValuePeople": { "type": "object", "required": ["type", "people"], "properties": { "id": { "type": "string" }, "type": { "const": "people" }, "people": { "type": "array", "items": { "type": "object", "properties": { "object": { "type": "string", "const": "user" }, "id": { "type": "string", "format": "uuid" } } } } } },
       "PropertyValueFiles": {
-        "properties": {
+        "type": "object", "required": ["type", "files"], "properties": {
           "id": { "type": "string" },
           "type": { "const": "files" },
           "files": {
@@ -940,11 +941,11 @@
           }
         }
       },
-      "PropertyValueCheckbox": { "properties": { "id": { "type": "string" }, "type": { "const": "checkbox" }, "checkbox": { "type": "boolean" } } },
-      "PropertyValueUrl": { "properties": { "id": { "type": "string" }, "type": { "const": "url" }, "url": { "type": "string", "nullable": true } } },
-      "PropertyValueEmail": { "properties": { "id": { "type": "string" }, "type": { "const": "email" }, "email": { "type": "string", "nullable": true } } },
-      "PropertyValuePhoneNumber": { "properties": { "id": { "type": "string" }, "type": { "const": "phone_number" }, "phone_number": { "type": "string", "nullable": true } } },
-      "PropertyValueRelation": { "properties": { "id": { "type": "string" }, "type": { "const": "relation" }, "relation": { "type": "array", "items": { "type": "object", "properties": { "id": { "type": "string", "format": "uuid" } }, "required": ["id"] } } } },
+      "PropertyValueCheckbox": { "type": "object", "required": ["type", "checkbox"], "properties": { "id": { "type": "string" }, "type": { "const": "checkbox" }, "checkbox": { "type": "boolean" } } },
+      "PropertyValueUrl": { "type": "object", "required": ["type", "url"], "properties": { "id": { "type": "string" }, "type": { "const": "url" }, "url": { "type": "string", "nullable": true } } },
+      "PropertyValueEmail": { "type": "object", "required": ["type", "email"], "properties": { "id": { "type": "string" }, "type": { "const": "email" }, "email": { "type": "string", "nullable": true } } },
+      "PropertyValuePhoneNumber": { "type": "object", "required": ["type", "phone_number"], "properties": { "id": { "type": "string" }, "type": { "const": "phone_number" }, "phone_number": { "type": "string", "nullable": true } } },
+      "PropertyValueRelation": { "type": "object", "required": ["type", "relation"], "properties": { "id": { "type": "string" }, "type": { "const": "relation" }, "relation": { "type": "array", "items": { "type": "object", "properties": { "id": { "type": "string", "format": "uuid" } }, "required": ["id"] } } } },
       "CreateDatabaseRequest": {
         "type": "object",
         "required": ["title", "properties"],

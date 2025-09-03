@@ -274,12 +274,3 @@ src/main/java/org/openapitools/client/model/V1SearchPageResultProperties.java
 src/main/java/org/openapitools/client/model/V1SearchPageResultPropertiesTitle.java
 src/main/java/org/openapitools/client/model/V1SearchRequest.java
 src/main/java/org/openapitools/client/model/V1SearchResponse.java
-src/test/java/org/openapitools/client/model/ParentSpaceIdTest.java
-src/test/java/org/openapitools/client/model/UserMePersonTest.java
-src/test/java/org/openapitools/client/model/UserMeTest.java
-src/test/java/org/openapitools/client/model/V1SearchPageResultParentTest.java
-src/test/java/org/openapitools/client/model/V1SearchPageResultPropertiesTest.java
-src/test/java/org/openapitools/client/model/V1SearchPageResultPropertiesTitleTest.java
-src/test/java/org/openapitools/client/model/V1SearchPageResultTest.java
-src/test/java/org/openapitools/client/model/V1SearchRequestTest.java
-src/test/java/org/openapitools/client/model/V1SearchResponseTest.java

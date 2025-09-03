@@ -8,8 +8,8 @@
 | Name | Type | Description | Notes |
 |------------ | ------------- | ------------- | -------------|
 |**id** | **String** |  |  [optional] |
-|**type** | **Object** |  |  [optional] |
-|**phoneNumber** | **String** |  |  [optional] |
+|**type** | **Object** |  |  |
+|**phoneNumber** | **String** |  |  |
 
 
 

@@ -30,19 +30,21 @@ export interface PropertyValueUrl {
      * @type {any}
      * @memberof PropertyValueUrl
      */
-    type?: any | null;
+    type: any | null;
     /**
      * 
      * @type {string}
      * @memberof PropertyValueUrl
      */
-    url?: string;
+    url: string;
 }
 
 /**
  * Check if a given object implements the PropertyValueUrl interface.
  */
 export function instanceOfPropertyValueUrl(value: object): value is PropertyValueUrl {
+    if (!('type' in value) || value['type'] === undefined) return false;
+    if (!('url' in value) || value['url'] === undefined) return false;
     return true;
 }
 
@@ -57,8 +59,8 @@ export function PropertyValueUrlFromJSONTyped(json: any, ignoreDiscriminator: bo
     return {
         
         'id': json['id'] == null ? undefined : json['id'],
-        'type': json['type'] == null ? undefined : json['type'],
-        'url': json['url'] == null ? undefined : json['url'],
+        'type': json['type'],
+        'url': json['url'],
     };
 }
 

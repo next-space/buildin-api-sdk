@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.openapitools.client.model.CreatePagePropertyValueRelationRelationInner;
-import org.openapitools.jackson.nullable.JsonNullable;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -66,7 +65,7 @@ public class PropertyValueRelation {
 
   public static final String SERIALIZED_NAME_RELATION = "relation";
   @SerializedName(SERIALIZED_NAME_RELATION)
-  @javax.annotation.Nullable
+  @javax.annotation.Nonnull
   private List<CreatePagePropertyValueRelationRelationInner> relation = new ArrayList<>();
 
   public PropertyValueRelation() {
@@ -110,7 +109,7 @@ public class PropertyValueRelation {
   }
 
 
-  public PropertyValueRelation relation(@javax.annotation.Nullable List<CreatePagePropertyValueRelationRelationInner> relation) {
+  public PropertyValueRelation relation(@javax.annotation.Nonnull List<CreatePagePropertyValueRelationRelationInner> relation) {
     this.relation = relation;
     return this;
   }
@@ -127,12 +126,12 @@ public class PropertyValueRelation {
    * Get relation
    * @return relation
    */
-  @javax.annotation.Nullable
+  @javax.annotation.Nonnull
   public List<CreatePagePropertyValueRelationRelationInner> getRelation() {
     return relation;
   }
 
-  public void setRelation(@javax.annotation.Nullable List<CreatePagePropertyValueRelationRelationInner> relation) {
+  public void setRelation(@javax.annotation.Nonnull List<CreatePagePropertyValueRelationRelationInner> relation) {
     this.relation = relation;
   }
 
@@ -152,20 +151,9 @@ public class PropertyValueRelation {
         Objects.equals(this.relation, propertyValueRelation.relation);
   }
 
-  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
-    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
-  }
-
   @Override
   public int hashCode() {
     return Objects.hash(id, type, relation);
-  }
-
-  private static <T> int hashCodeNullable(JsonNullable<T> a) {
-    if (a == null) {
-      return 1;
-    }
-    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
   }
 
   @Override
@@ -199,7 +187,7 @@ public class PropertyValueRelation {
     openapiFields = new HashSet<String>(Arrays.asList("id", "type", "relation"));
 
     // a set of required properties/fields (JSON key names)
-    openapiRequiredFields = new HashSet<String>(0);
+    openapiRequiredFields = new HashSet<String>(Arrays.asList("type", "relation"));
   }
 
   /**
@@ -222,24 +210,27 @@ public class PropertyValueRelation {
           throw new IllegalArgumentException(String.format("The field `%s` in the JSON string is not defined in the `PropertyValueRelation` properties. JSON: %s", entry.getKey(), jsonElement.toString()));
         }
       }
+
+      // check to make sure all required properties/fields are present in the JSON string
+      for (String requiredField : PropertyValueRelation.openapiRequiredFields) {
+        if (jsonElement.getAsJsonObject().get(requiredField) == null) {
+          throw new IllegalArgumentException(String.format("The required field `%s` is not found in the JSON string: %s", requiredField, jsonElement.toString()));
+        }
+      }
         JsonObject jsonObj = jsonElement.getAsJsonObject();
       if ((jsonObj.get("id") != null && !jsonObj.get("id").isJsonNull()) && !jsonObj.get("id").isJsonPrimitive()) {
         throw new IllegalArgumentException(String.format("Expected the field `id` to be a primitive type in the JSON string but got `%s`", jsonObj.get("id").toString()));
       }
-      if (jsonObj.get("relation") != null && !jsonObj.get("relation").isJsonNull()) {
-        JsonArray jsonArrayrelation = jsonObj.getAsJsonArray("relation");
-        if (jsonArrayrelation != null) {
-          // ensure the json data is an array
-          if (!jsonObj.get("relation").isJsonArray()) {
-            throw new IllegalArgumentException(String.format("Expected the field `relation` to be an array in the JSON string but got `%s`", jsonObj.get("relation").toString()));
-          }
-
-          // validate the optional field `relation` (array)
-          for (int i = 0; i < jsonArrayrelation.size(); i++) {
-            CreatePagePropertyValueRelationRelationInner.validateJsonElement(jsonArrayrelation.get(i));
-          };
-        }
+      // ensure the json data is an array
+      if (!jsonObj.get("relation").isJsonArray()) {
+        throw new IllegalArgumentException(String.format("Expected the field `relation` to be an array in the JSON string but got `%s`", jsonObj.get("relation").toString()));
       }
+
+      JsonArray jsonArrayrelation = jsonObj.getAsJsonArray("relation");
+      // validate the required field `relation` (array)
+      for (int i = 0; i < jsonArrayrelation.size(); i++) {
+        CreatePagePropertyValueRelationRelationInner.validateJsonElement(jsonArrayrelation.get(i));
+      };
   }
 
   public static class CustomTypeAdapterFactory implements TypeAdapterFactory {
