@@ -972,7 +972,9 @@
         "type": "object",
         "properties": {
           "start_cursor": { "type": "string", "description": "分页游标，使用页面ID作为游标值" },
-          "page_size": { "type": "integer", "minimum": 1, "maximum": 100, "default": 50, "description": "每页记录数" }
+          "page_size": { "type": "integer", "minimum": 1, "maximum": 100, "default": 50, "description": "每页记录数" },
+          "after_created_at": { "type": "number", "description": "筛选创建时间晚于此时间戳的记录" },
+          "after_updated_at": { "type": "number", "description": "筛选更新时间晚于此时间戳的记录" }
         }
       },
       "QueryDatabaseResponse": {

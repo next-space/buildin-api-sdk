@@ -81,7 +81,7 @@ async function createDatabaseRecordDemo() {
           type: 'date',
           date: {
             start: '2025/07/03T15:16:00',
-            end: null,
+            end: '2025/07/04T15:16:00',
             time_zone: null
           }
         },

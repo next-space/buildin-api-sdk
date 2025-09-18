@@ -20,6 +20,7 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 import com.google.gson.Gson;
@@ -59,6 +60,16 @@ public class QueryDatabaseRequest {
   @SerializedName(SERIALIZED_NAME_PAGE_SIZE)
   @javax.annotation.Nullable
   private Integer pageSize = 50;
+
+  public static final String SERIALIZED_NAME_AFTER_CREATED_AT = "after_created_at";
+  @SerializedName(SERIALIZED_NAME_AFTER_CREATED_AT)
+  @javax.annotation.Nullable
+  private BigDecimal afterCreatedAt;
+
+  public static final String SERIALIZED_NAME_AFTER_UPDATED_AT = "after_updated_at";
+  @SerializedName(SERIALIZED_NAME_AFTER_UPDATED_AT)
+  @javax.annotation.Nullable
+  private BigDecimal afterUpdatedAt;
 
   public QueryDatabaseRequest() {
   }
@@ -103,6 +114,44 @@ public class QueryDatabaseRequest {
   }
 
 
+  public QueryDatabaseRequest afterCreatedAt(@javax.annotation.Nullable BigDecimal afterCreatedAt) {
+    this.afterCreatedAt = afterCreatedAt;
+    return this;
+  }
+
+  /**
+   * 筛选创建时间晚于此时间戳的记录
+   * @return afterCreatedAt
+   */
+  @javax.annotation.Nullable
+  public BigDecimal getAfterCreatedAt() {
+    return afterCreatedAt;
+  }
+
+  public void setAfterCreatedAt(@javax.annotation.Nullable BigDecimal afterCreatedAt) {
+    this.afterCreatedAt = afterCreatedAt;
+  }
+
+
+  public QueryDatabaseRequest afterUpdatedAt(@javax.annotation.Nullable BigDecimal afterUpdatedAt) {
+    this.afterUpdatedAt = afterUpdatedAt;
+    return this;
+  }
+
+  /**
+   * 筛选更新时间晚于此时间戳的记录
+   * @return afterUpdatedAt
+   */
+  @javax.annotation.Nullable
+  public BigDecimal getAfterUpdatedAt() {
+    return afterUpdatedAt;
+  }
+
+  public void setAfterUpdatedAt(@javax.annotation.Nullable BigDecimal afterUpdatedAt) {
+    this.afterUpdatedAt = afterUpdatedAt;
+  }
+
+
 
   @Override
   public boolean equals(Object o) {
@@ -114,12 +163,14 @@ public class QueryDatabaseRequest {
     }
     QueryDatabaseRequest queryDatabaseRequest = (QueryDatabaseRequest) o;
     return Objects.equals(this.startCursor, queryDatabaseRequest.startCursor) &&
-        Objects.equals(this.pageSize, queryDatabaseRequest.pageSize);
+        Objects.equals(this.pageSize, queryDatabaseRequest.pageSize) &&
+        Objects.equals(this.afterCreatedAt, queryDatabaseRequest.afterCreatedAt) &&
+        Objects.equals(this.afterUpdatedAt, queryDatabaseRequest.afterUpdatedAt);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(startCursor, pageSize);
+    return Objects.hash(startCursor, pageSize, afterCreatedAt, afterUpdatedAt);
   }
 
   @Override
@@ -128,6 +179,8 @@ public class QueryDatabaseRequest {
     sb.append("class QueryDatabaseRequest {\n");
     sb.append("    startCursor: ").append(toIndentedString(startCursor)).append("\n");
     sb.append("    pageSize: ").append(toIndentedString(pageSize)).append("\n");
+    sb.append("    afterCreatedAt: ").append(toIndentedString(afterCreatedAt)).append("\n");
+    sb.append("    afterUpdatedAt: ").append(toIndentedString(afterUpdatedAt)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -149,7 +202,7 @@ public class QueryDatabaseRequest {
 
   static {
     // a set of all properties/fields (JSON key names)
-    openapiFields = new HashSet<String>(Arrays.asList("start_cursor", "page_size"));
+    openapiFields = new HashSet<String>(Arrays.asList("start_cursor", "page_size", "after_created_at", "after_updated_at"));
 
     // a set of required properties/fields (JSON key names)
     openapiRequiredFields = new HashSet<String>(0);

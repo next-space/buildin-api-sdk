@@ -2580,6 +2580,8 @@ components:
           type: boolean
     QueryDatabaseRequest:
       example:
+        after_created_at: 6.027456183070403
+        after_updated_at: 1.4658129805029452
         start_cursor: start_cursor
         page_size: 8
       properties:
@@ -2592,6 +2594,12 @@ components:
           maximum: 100
           minimum: 1
           type: integer
+        after_created_at:
+          description: 筛选创建时间晚于此时间戳的记录
+          type: number
+        after_updated_at:
+          description: 筛选更新时间晚于此时间戳的记录
+          type: number
     QueryDatabaseResponse:
       allOf:
       - $ref: "#/components/schemas/PaginatedList"

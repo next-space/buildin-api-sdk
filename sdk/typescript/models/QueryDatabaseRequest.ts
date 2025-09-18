@@ -31,6 +31,18 @@ export interface QueryDatabaseRequest {
      * @memberof QueryDatabaseRequest
      */
     page_size?: number;
+    /**
+     * 筛选创建时间晚于此时间戳的记录
+     * @type {number}
+     * @memberof QueryDatabaseRequest
+     */
+    after_created_at?: number;
+    /**
+     * 筛选更新时间晚于此时间戳的记录
+     * @type {number}
+     * @memberof QueryDatabaseRequest
+     */
+    after_updated_at?: number;
 }
 
 /**
@@ -52,6 +64,8 @@ export function QueryDatabaseRequestFromJSONTyped(json: any, ignoreDiscriminator
         
         'start_cursor': json['start_cursor'] == null ? undefined : json['start_cursor'],
         'page_size': json['page_size'] == null ? undefined : json['page_size'],
+        'after_created_at': json['after_created_at'] == null ? undefined : json['after_created_at'],
+        'after_updated_at': json['after_updated_at'] == null ? undefined : json['after_updated_at'],
     };
 }
 
@@ -68,6 +82,8 @@ export function QueryDatabaseRequestToJSONTyped(value?: QueryDatabaseRequest | n
         
         'start_cursor': value['start_cursor'],
         'page_size': value['page_size'],
+        'after_created_at': value['after_created_at'],
+        'after_updated_at': value['after_updated_at'],
     };
 }
 

@@ -5,7 +5,7 @@
     <artifactId>buildin-api-client</artifactId>
     <packaging>jar</packaging>
     <name>buildin-api-client</name>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <url>https://github.com/next_space/buildin-api-sdk</url>
     <description>Buildin API Java</description>
     <scm>

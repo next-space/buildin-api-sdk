@@ -19,12 +19,19 @@ async function updateDatabaseRecordDemo() {
       apiToken: config.apiToken,
       timeout: config.timeout
     });
-    const pageId = "4bc1c007-29fa-435c-a909-1d05706454ed";
+    const pageId = "09e1e2a8-3678-42e5-b5b5-800940599ec4";
     const pageData = {
       properties: {
         '完成': {
           type: 'checkbox',
           checkbox: false
+        },
+        '观看': {
+          type: 'date',
+          date: {
+            start: '2025/07/03T15:16:00',
+            end: '2025/07/20T06:16:00',
+          }
         }
       }
     };
